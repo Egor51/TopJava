@@ -1,0 +1,11 @@
+.idea
+out
+target
+*.iml
+log
+*.patch
+ReleaseNotes.md
+cv.md
+description.md
+doc/
+graduation.md
