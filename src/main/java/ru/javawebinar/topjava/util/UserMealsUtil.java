@@ -24,7 +24,7 @@ public class UserMealsUtil {
 
         List<UserMealWithExcess> mealsTo1 = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(11, 0), 2000);
         List<UserMealWithExcess> mealsTo2 = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(11, 0), 2000);
-        List<UserMealWithExcess> mealsTo3 = optional2(meals, LocalTime.of(7, 0), LocalTime.of(11, 0), 2000);
+        List<UserMealWithExcess> mealsTo3 = optionalTwo(meals, LocalTime.of(7, 0), LocalTime.of(11, 0), 2000);
 
         System.out.println("for: ");
         mealsTo1.forEach(System.out::println);
@@ -105,7 +105,7 @@ public class UserMealsUtil {
      @return a list of UserMealWithExcess objects representing the meals that exceed the calorie limit within the specified time range
      */
 
-    public static List<UserMealWithExcess>  optional2(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<UserMealWithExcess> optionalTwo(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> dailyCalories = new HashMap<>();
         List<UserMealWithExcess> mealsWithExcess = new ArrayList<>();
 
