@@ -11,22 +11,6 @@ public class UserMealWithExcess {
 
     private final boolean excess;
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean isExcess() {
-        return excess;
-    }
-
-    public int getCalories() {
-        return calories;
-    }
-
 
     public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, boolean excess) {
         this.dateTime = dateTime;
