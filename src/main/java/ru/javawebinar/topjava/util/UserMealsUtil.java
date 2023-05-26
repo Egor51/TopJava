@@ -8,7 +8,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -24,7 +26,7 @@ public class UserMealsUtil {
 
         List<UserMealWithExcess> mealsTo1 = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(11, 0), 2000);
         List<UserMealWithExcess> mealsTo2 = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(11, 0), 2000);
-        List<UserMealWithExcess> mealsTo3 = optionalTwo(meals, LocalTime.of(7, 0), LocalTime.of(11, 0), 2000);
+        List<UserMealWithExcess> mealsTo3 = filterByStreamsOptionalTwo(meals, LocalTime.of(7, 0), LocalTime.of(11, 0), 2000);
 
         System.out.println("for: ");
         mealsTo1.forEach(System.out::println);
@@ -90,41 +92,41 @@ public class UserMealsUtil {
     }
 
     /**
-     Filters the given list of UserMeals based on the specified time range and daily calorie limit,
-
-     and returns a list of UserMealWithExcess objects representing the meals that exceed the calorie limit.
-
-     @param meals a list of UserMeal objects to be filtered
-
-     @param startTime the start time of the time range for filtering meals
-
-     @param endTime the end time of the time range for filtering meals
-
-     @param caloriesPerDay the daily calorie limit for determining meal excess
-
-     @return a list of UserMealWithExcess objects representing the meals that exceed the calorie limit within the specified time range
+     * Processes the given list of UserMeals and calculates the total calories consumed on each date.
+     * For each meal consumed within the specified time range, the method creates a UserMealWithExcess object,
+     * and determines whether the total calories consumed on the meal's date exceeds the daily calorie limit.
+     *
+     * @param meals          a list of UserMeal objects to be processed
+     * @param startTime      the start time of the time range for filtering meals
+     * @param endTime        the end time of the time range for filtering meals
+     * @param caloriesPerDay the daily calorie limit for determining meal excess
+     * @return a list of UserMealWithExcess objects representing the meals consumed within the specified time range,
+     *         with an indication of whether the total calories consumed on the meal's date exceeds the daily calorie limit.
      */
-
-    public static List<UserMealWithExcess> optionalTwo(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        Map<LocalDate, Integer> dailyCalories = new HashMap<>();
-        List<UserMealWithExcess> mealsWithExcess = new ArrayList<>();
-
-        for (UserMeal meal : meals) {
-            LocalDate mealDate = meal.getDateTime().toLocalDate();
-            int newCalories = dailyCalories.getOrDefault(mealDate, 0) + meal.getCalories();
-            dailyCalories.put(mealDate, newCalories);
-            LocalTime mealTime = meal.getDateTime().toLocalTime();
-
-            if (TimeUtil.isBetweenHalfOpen(mealTime, startTime, endTime)) {
-                UserMealWithExcess mealWithExcess = new UserMealWithExcess(
-                        meal.getDateTime(),
-                        meal.getDescription(),
-                        meal.getCalories(),
-                        newCalories > caloriesPerDay
-                );
-                mealsWithExcess.add(mealWithExcess);
-            }
-        }
-        return mealsWithExcess;
+    public static List<UserMealWithExcess> filterByStreamsOptionalTwo(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        return meals.stream()
+                .collect(Collectors.groupingBy(
+                        meal -> meal.getDateTime().toLocalDate(),
+                        Collector.of(
+                                () -> new int[2],
+                                (a, meal) -> {
+                                    a[0] += meal.getCalories();
+                                    if (TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+                                        a[1] += meal.getCalories();
+                                    }
+                                },
+                                (a, b) -> {
+                                    a[0] += b[0];
+                                    a[1] += b[1];
+                                    return a;
+                                }
+                        )
+                )).entrySet().stream()
+                .flatMap(entry -> entry.getValue()[1] > 0 ?
+                        Stream.of(new UserMealWithExcess(entry.getKey().atTime(startTime), "", entry.getValue()[1], entry.getValue()[0] > caloriesPerDay)) :
+                        Stream.empty())
+                .collect(Collectors.toList());
     }
 }
+
+
