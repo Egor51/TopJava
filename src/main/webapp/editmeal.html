@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Meal</title>
+</head>
+<body>
+<h2><a href="index.html">Home</a></h2>
+<hr>
+<h2>Edit Meal</h2>
+<form id="mealForm" method="post" action="/topjava/meals">
+    <label for="dateTime">DateTime:</label><br>
+    <input type="datetime-local" id="dateTime" name="dateTime"><br>
+    <label for="description">Description:</label><br>
+    <input type="text" id="description" name="description"><br>
+    <label for="calories">Calories:</label><br>
+    <input type="number" id="calories" name="calories"><br>
+    <input type="hidden" id="mealId" name="id" value="">
+    <input type="submit" value="Update">
+</form>
+<button onclick="goBack()">Back</button>
+<script>
+
+    var urlParams = new URLSearchParams(window.location.search);
+
+    // var urlParams = new URLSearchParams(window.location.search);
+    // var mealId = urlParams.get('id');
+    // if (mealId) {
+    var urlParams = new URLSearchParams(window.location.search);
+
+    // Заполнение полей формы значениями из параметров
+    document.getElementById('dateTime').value = urlParams.get('dateTime');
+    document.getElementById('description').value = urlParams.get('description');
+    document.getElementById('calories').value = urlParams.get('calories');
+    document.getElementById('mealId').value = urlParams.get('id');
+    // }
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+</body>
+</html>
