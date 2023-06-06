@@ -15,9 +15,18 @@
         table {
             border-collapse: collapse;
         }
+
         th, td {
             border: 1px solid black;
             padding: 10px;
+        }
+
+        .excess-cell {
+            color: red;
+        }
+
+        .normal-cell {
+            color: green;
         }
     </style>
 </head>
@@ -31,30 +40,18 @@
         <th>DateTime</th>
         <th>Description</th>
         <th>Calories</th>
-        <th>Excess</th>
         <th>Edit</th>
         <th>Delete</th>
     </tr>
     <jsp:useBean id="meals" scope="request" type="java.util.List"/>
     <c:forEach var="meal" items="${meals}">
         <tr>
-            <td><javatime:format value="${meal.dateTime}" pattern="yyyy-MM-dd HH:mm" /></td>
-            <td>${meal.description}</td>
-            <td>${meal.calories}</td>
-            <td>
-                <c:choose>
-                    <c:when test="${meal.excess}">
-                        <span style="color: red;">Excess</span>
-                    </c:when>
-                    <c:otherwise>
-                        <span style="color: green;">Normal</span>
-                    </c:otherwise>
-                </c:choose>
-            </td>
-<%--            <td><a href="editmeal.html?meal=${meal}">Edit</a></td>--%>
-            <td><a href="editmeal.html?id=${meal.id}&dateTime=${meal.dateTime}&description=${meal.description}&calories=${meal.calories}">Edit</a></td>
-
-            <td><a href="#" class="delete-link" data-id="${meal.id}">Delete</a></td>
+            <c:set var="cellClass" value="${meal.excess ? 'excess-cell' : 'normal-cell'}"/>
+            <td class="${cellClass}"><javatime:format value="${meal.dateTime}" pattern="yyyy-MM-dd HH:mm"/></td>
+            <td class="${cellClass}">${meal.description}</td>
+            <td class="${cellClass}">${meal.calories}</td>
+            <td class="${cellClass}"><a href="editmeal.html?meal=${meal.id}">Edit</a></td>
+            <td class="${cellClass}"><a href="#" class="delete-link" data-id="${meal.id}">Delete</a></td>
         </tr>
     </c:forEach>
 </table>
@@ -62,19 +59,19 @@
     document.addEventListener('DOMContentLoaded', function () {
         var deleteLinks = document.querySelectorAll('.delete-link');
         console.log(deleteLinks);
-        deleteLinks.forEach(function(link) {
-            link.addEventListener('click', function(e) {
+        deleteLinks.forEach(function (link) {
+            link.addEventListener('click', function (e) {
                 e.preventDefault();
                 var id = e.target.getAttribute('data-id');
                 console.log(id);
                 fetch('meals?action=delete&id=' + id, {
                     method: 'DELETE',
-                }).then(function(response) {
+                }).then(function (response) {
                     console.log(response);
                     if (response.status === 200) {
                         location.reload();
                     }
-                }).catch(function(error) {
+                }).catch(function (error) {
                     console.error('Error:', error);
                 });
             });
