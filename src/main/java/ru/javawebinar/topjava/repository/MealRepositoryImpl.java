@@ -14,64 +14,79 @@ public class MealRepositoryImpl implements MealRepository {
     private static final Logger log = getLogger(MealRepositoryImpl.class);
     private final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
     private final AtomicInteger idGenerator = new AtomicInteger(0);
-    /*
-        This is the constructor for the MealRepositoryImpl class. It initializes the repository with a set of meals obtained from the MealsUtil.getMeals() method.
-    */
+
+    /**
+     * Constructor for the MealRepositoryImpl class.
+     * Initializes the repository with a set of meals obtained from the MealsUtil.getMeals() method.
+     */
     public MealRepositoryImpl() {
         List<Meal> initialMeals = MealsUtil.getMeals();
-        initialMeals.forEach(meal -> {
-            meals.put(meal.getId(), meal);
-            idGenerator.set(meal.getId());
-        });
+        initialMeals.forEach(this::create);
     }
-    /*
-        This method is used to save a Meal object to the repository. If the meal's ID is null, it generates a new ID and assigns it to the meal before saving.
-    */
+
+    /**
+     * Saves a Meal object to the repository.
+     * If the meal's ID is null, it generates a new ID and assigns it to the meal before saving.
+     * If the meal's ID exists, it updates the meal.
+     *
+     * @param meal Meal to be saved
+     * @return saved Meal
+     */
     @Override
-    public void save(Meal meal) {
-        if (meal.getId() == null) {
-            Integer id = idGenerator.incrementAndGet();
-            meal.setId(id);
-            meals.put(id, meal);
-        }
-        meals.put(meal.getId(), meal);
+    public Meal create(Meal meal) {
+        Integer id = idGenerator.incrementAndGet();
+        Meal newMeal = new Meal(id, meal.getDateTime(), meal.getDescription(), meal.getCalories());
+        meals.put(id, newMeal);
+        return newMeal;
     }
-    /*
-        This method is used to fetch a Meal object from the repository based on its ID. If no meal with the given ID exists, it throws a NoSuchElementException.
-    */
-    public Meal getById(Integer id) {
-        if (!meals.containsKey(id)) {
-            throw new NoSuchElementException("Meal with id " + id + " does not exist");
-        }
+
+    /**
+     * Fetches a Meal object from the repository based on its ID.
+     *
+     * @param id id of the meal
+     * @return Meal object or null if no meal with the given ID exists
+     */
+    @Override
+    public Meal getById(int id) {
         return meals.get(id);
     }
-    /*
-        This method is used to update the details of a Meal object in the repository based on its ID. If no meal with the given ID exists, it throws a NoSuchElementException.
-    */
+
+    /**
+     * Updates the details of a Meal object in the repository based on its ID.
+     *
+     * @param meal Meal to be updated
+     * @return updated Meal or null if no meal with the given ID exists
+     */
     @Override
-    public void updateById(Meal meal) {
-        if (!meals.containsKey(meal.getId())) {
-            throw new NoSuchElementException("Meal with id " + meal.getId() + " does not exist");
+    public Meal update(Meal meal) {
+        if (meals.containsKey(meal.getId())) {
+            meals.put(meal.getId(), meal);
+            log.debug("Meal with id " + meal.getId() + " updated");
+            return meal;
         }
-        meals.put(meal.getId(), meal);
-        log.debug("Meal with id " + meal.getId() + " updated");
+        return null;
     }
-    /*
-        This method is used to remove a Meal object from the repository based on its ID. If no meal with the given ID exists, it throws a NoSuchElementException.
-    */
+
+    /**
+     * Removes a Meal object from the repository based on its ID.
+     *
+     * @param id id of the meal
+     */
     @Override
-    public void deleteById(Integer id) {
-        if (!meals.containsKey(id)) {
-            throw new NoSuchElementException("Meal with id " + id + " does not exist");
-        }
+    public void deleteById(int id) {
         meals.remove(id);
         log.debug("Meal with id " + id + " removed");
     }
-    /*
-        This method is used to retrieve a list of all Meal objects stored in the repository. The meals are returned as a new list of values from the repository's internal map.
-    */
+
+    /**
+     * Retrieves a list of all Meal objects stored in the repository.
+     * The meals are returned as a new list of values from the repository's internal map.
+     *
+     * @return List of Meal
+     */
     @Override
     public List<Meal> getAll() {
         return new ArrayList<>(meals.values());
     }
 }
+
