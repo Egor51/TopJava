@@ -6,15 +6,10 @@ create <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>
-        <c:choose>
-            <c:when test="${meal.id != null}">Edit Meal</c:when>
-            <c:otherwise>Add Meal</c:otherwise>
-        </c:choose>
-    </title>
+    <title>Create</title>
 </head>
 <body>
-<h2><a href="index.jsp">Home</a></h2>
+<h2><a href="index.html">Home</a></h2>
 <hr>
 <h2>
     <c:choose>
