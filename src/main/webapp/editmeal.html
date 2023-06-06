@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Meal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 </head>
 <body>
 <h2><a href="index.html">Home</a></h2>
 <hr>
 <h2>Edit Meal</h2>
-<form id="mealForm" method="post" action="/topjava/meals">
+<form id="mealForm" method="post" action="meals">
     <label for="dateTime">DateTime:</label><br>
     <input type="datetime-local" id="dateTime" name="dateTime"><br>
     <label for="description">Description:</label><br>
@@ -20,20 +21,58 @@
 </form>
 <button onclick="goBack()">Back</button>
 <script>
+    var mealId = getMealIdFromURL();
 
-    var urlParams = new URLSearchParams(window.location.search);
+    if (mealId !== null && mealId.trim() !== '') {
+        fetchMealById(mealId);
+    }
+    function getMealIdFromURL() {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('meal');
+    }
+    function fetchMealById(mealId) {
+        fetch('meals?id=' + mealId, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to fetch meal');
+                }
+            })
+            .then(meal => {
+                fillFormFields(meal);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+    function pad(number) {
+        if (number < 10) {
+            return '0' + number;
+        }
+        return number;
+    }
+    function fillFormFields(meal) {
+        console.log(meal.dateTime);
+        var dateTimeString = meal.dateTime.year + "-"
+            + pad(meal.dateTime.monthValue) + "-"
+            + pad(meal.dateTime.dayOfMonth) + "T"
+            + pad(meal.dateTime.hour) + ":"
+            + pad(meal.dateTime.minute);
+        var dateTime = moment(dateTimeString);
+        var formattedDateTime = dateTime.format("YYYY-MM-DDTHH:mm");
 
-    // var urlParams = new URLSearchParams(window.location.search);
-    // var mealId = urlParams.get('id');
-    // if (mealId) {
-    var urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('dateTime').value = formattedDateTime;
+        document.getElementById('description').value = meal.description;
+        document.getElementById('calories').value = meal.calories;
+        document.getElementById('mealId').value = meal.id;
+    }
 
-    // Заполнение полей формы значениями из параметров
-    document.getElementById('dateTime').value = urlParams.get('dateTime');
-    document.getElementById('description').value = urlParams.get('description');
-    document.getElementById('calories').value = urlParams.get('calories');
-    document.getElementById('mealId').value = urlParams.get('id');
-    // }
     function goBack() {
         window.history.back();
     }
