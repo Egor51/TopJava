@@ -5,9 +5,14 @@ import ru.javawebinar.topjava.model.Meal;
 import java.util.List;
 
 public interface MealRepository {
-    void save(Meal meal);
-    Meal getById(Integer id);
-    void updateById(Meal meal);
-    void deleteById(Integer id);
+    Meal create(Meal meal);
+
+    Meal getById(int id);
+
+    Meal update(Meal meal);
+
+    void deleteById(int id);
+
     List<Meal> getAll();
 }
+
