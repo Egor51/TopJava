@@ -34,7 +34,7 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
-<h3><a href="addmeal.html">Add Meals</a></h3>
+<h3><a href="editmeal.jsp">Add Meals</a></h3>
 <table>
     <tr>
         <th>DateTime</th>
@@ -50,7 +50,7 @@
             <td class="${cellClass}"><javatime:format value="${meal.dateTime}" pattern="yyyy-MM-dd HH:mm"/></td>
             <td class="${cellClass}">${meal.description}</td>
             <td class="${cellClass}">${meal.calories}</td>
-            <td class="${cellClass}"><a href="editmeal.html?meal=${meal.id}">Edit</a></td>
+            <td class="${cellClass}"><a href="meals?id=${meal.id}">Edit</a></td>
             <td class="${cellClass}"><a href="#" class="delete-link" data-id="${meal.id}">Delete</a></td>
         </tr>
     </c:forEach>
