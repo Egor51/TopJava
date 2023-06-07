@@ -6,11 +6,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealRepositoryInMemory implements MealRepository {
+public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
     private final AtomicInteger idGenerator = new AtomicInteger(0);
 
-    public MealRepositoryInMemory() {
+    public InMemoryMealRepository() {
         List<Meal> initialMeals = MealsUtil.getMeals();
         initialMeals.forEach(this::create);
     }
