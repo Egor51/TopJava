@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MealRepositoryInMemory implements MealRepository {
     private final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
-    private final AtomicInteger idGenerator = new AtomicInteger(1);
+    private final AtomicInteger idGenerator = new AtomicInteger(0);
 
     public MealRepositoryInMemory() {
         List<Meal> initialMeals = MealsUtil.getMeals();
