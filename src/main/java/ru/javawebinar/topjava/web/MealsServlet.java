@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.repository.MealRepositoryImpl;
+import ru.javawebinar.topjava.repository.MealRepositoryInMemory;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -23,10 +23,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MealsServlet extends HttpServlet {
     private static final Logger log = getLogger(MealsServlet.class);
     private MealRepository mealRepository;
+    private final int caloriesPerDay = 2000;
 
     @Override
     public void init() {
-        this.mealRepository = new MealRepositoryImpl();
+        this.mealRepository = new MealRepositoryInMemory();
     }
 
     @Override
@@ -48,7 +49,6 @@ public class MealsServlet extends HttpServlet {
     }
 
     private void displayMeals(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final int caloriesPerDay = 2000;
         List<Meal> meals = mealRepository.getAll();
         List<MealTo> mealsTo = MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, caloriesPerDay);
         req.setAttribute("meals", mealsTo);
@@ -66,29 +66,33 @@ public class MealsServlet extends HttpServlet {
         String dateTimeStr = req.getParameter("dateTime");
         String description = req.getParameter("description");
         String caloriesStr = req.getParameter("calories");
-        LocalDateTime dateTime;
-        int calories;
-        dateTime = LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        calories = Integer.parseInt(caloriesStr);
-        processMeal(mealIdStr, dateTime, description, calories);
+        LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        int calories = Integer.parseInt(caloriesStr);
+        int id = isNotEmpty(mealIdStr) ? Integer.parseInt(mealIdStr) : 0; //inMemory id start from 1
+        processMeal(id, dateTime, description, calories);
         resp.sendRedirect(req.getContextPath() + "/meals");
     }
 
-    private void processMeal(String mealIdStr, LocalDateTime dateTime, String description, int calories) {
-        if (mealIdStr != null && !mealIdStr.trim().isEmpty()) {
-            Meal updatedMeal = new Meal(Integer.parseInt(mealIdStr), dateTime, description, calories);
+    private void processMeal(int mealIdStr, LocalDateTime dateTime, String description, int calories) {
+        if (mealIdStr != 0) {
+            Meal updatedMeal = new Meal(mealIdStr, dateTime, description, calories);
             mealRepository.update(updatedMeal);
+            log.debug("Meal with id " + updatedMeal.getId() + " updated");
         } else {
             Meal meal = new Meal(dateTime, description, calories);
             mealRepository.create(meal);
-            log.debug("create meal");
+            log.debug("created meal");
         }
+    }
+
+    private boolean isNotEmpty(String str) {
+        return str != null && !str.trim().isEmpty();
     }
 
     private boolean isValid(HttpServletRequest req, String... params) {
         for (String param : params) {
             String value = req.getParameter(param);
-            if (value == null || value.trim().isEmpty()) {
+            if (!isNotEmpty(value)) {
                 return false;
             }
         }
@@ -99,6 +103,7 @@ public class MealsServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         int id = Integer.parseInt(req.getParameter("id"));
         mealRepository.deleteById(id);
+        log.debug("Meal with id " + id + " removed");
     }
 }
 
