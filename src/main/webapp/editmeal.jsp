@@ -11,12 +11,7 @@ create <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <body>
 <h2><a href="index.html">Home</a></h2>
 <hr>
-<h2>
-    <c:choose>
-        <c:when test="${meal.id != null}">Edit Meal</c:when>
-        <c:otherwise>Add Meal</c:otherwise>
-    </c:choose>
-</h2>
+<h2>${meal.id != null ? 'Edit Meal' : 'Add Meal'}</h2>
 <form id="mealForm" method="post" action="meals">
     <label for="dateTime">DateTime:</label><br>
     <input type="datetime-local" id="dateTime" name="dateTime" value="${meal.dateTime}" /><br>
@@ -25,8 +20,7 @@ create <%@ page contentType="text/html;charset=UTF-8" language="java" %>
     <label for="calories">Calories:</label><br>
     <input type="number" id="calories" name="calories" value="${meal.calories}"><br>
     <input type="hidden" id="mealId" name="id" value="${meal.id}">
-    <input type="submit" value="<c:choose><c:when test='${meal.id != null}'>Update</c:when><c:otherwise>Create</c:otherwise></c:choose>">
-</form>
+    <input type="submit" value="${meal.id != null ? 'Update' : 'Create'}"></form>
 <button onclick="goBack()">Back</button>
 <script>
     function goBack() {
