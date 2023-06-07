@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.repository.MealRepositoryInMemory;
+import ru.javawebinar.topjava.repository.InMemoryMealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -23,11 +22,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MealsServlet extends HttpServlet {
     private static final Logger log = getLogger(MealsServlet.class);
     private MealRepository mealRepository;
-    private final int caloriesPerDay = 2000;
+    static final int CALORIES_PER_DAY = 2000;
 
     @Override
     public void init() {
-        this.mealRepository = new MealRepositoryInMemory();
+        this.mealRepository = new InMemoryMealRepository();
     }
 
     @Override
@@ -50,7 +49,7 @@ public class MealsServlet extends HttpServlet {
 
     private void displayMeals(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Meal> meals = mealRepository.getAll();
-        List<MealTo> mealsTo = MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, caloriesPerDay);
+        List<MealTo> mealsTo = MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY);
         req.setAttribute("meals", mealsTo);
         req.getRequestDispatcher("meals.jsp").forward(req, resp);
     }
@@ -66,15 +65,15 @@ public class MealsServlet extends HttpServlet {
         String dateTimeStr = req.getParameter("dateTime");
         String description = req.getParameter("description");
         String caloriesStr = req.getParameter("calories");
-        LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr);
         int calories = Integer.parseInt(caloriesStr);
-        int id = isNotEmpty(mealIdStr) ? Integer.parseInt(mealIdStr) : 0; //inMemory id start from 1
+        Integer id = isNotEmpty(mealIdStr) ? Integer.parseInt(mealIdStr) : null;
         processMeal(id, dateTime, description, calories);
         resp.sendRedirect(req.getContextPath() + "/meals");
     }
 
-    private void processMeal(int mealIdStr, LocalDateTime dateTime, String description, int calories) {
-        if (mealIdStr != 0) {
+    private void processMeal(Integer mealIdStr, LocalDateTime dateTime, String description, int calories) {
+        if (mealIdStr != null) {
             Meal updatedMeal = new Meal(mealIdStr, dateTime, description, calories);
             mealRepository.update(updatedMeal);
             log.debug("Meal with id " + updatedMeal.getId() + " updated");
