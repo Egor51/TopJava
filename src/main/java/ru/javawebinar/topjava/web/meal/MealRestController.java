@@ -1,34 +1,48 @@
 package ru.javawebinar.topjava.web.meal;
 
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.to.MealTo;
 
-import java.util.Collection;
+import java.util.List;
 
-@RestController
-@RequestMapping(value = MealRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-public class MealRestController extends AbstractMealController {
-    static final String REST_URL = "/rest/profile/meals";
-    @GetMapping
-    public Collection<Meal> getAll() {
-        return super.getAll();
+import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
+@Controller
+public class MealRestController {
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private MealService service;
+
+    public List<MealTo> getAll() {
+        log.info("getAll");
+        return service.getAll(authUserId());
     }
-    @GetMapping("/{id}")
-    public Meal get(@RequestParam int id) {
-        return super.get(id);
+
+    public Meal get(int id) {
+        log.info("get {}", id);
+        return service.get(id,authUserId());
     }
-    @PostMapping()
-    public Meal create(@RequestBody Meal meal) {
-        return super.create(meal);
+
+    public Meal create(Meal meal) {
+        log.info("create {}", meal);
+        checkNew(meal);
+        return service.create(meal,authUserId());
     }
-    @DeleteMapping("/{id}")
+
     public void delete(int id) {
-
-        super.delete(id);
+        log.info("delete {}", id);
+        service.delete(id,authUserId());
     }
-    @PutMapping(value = "/{id}")
-    public void update(@RequestBody Meal meal) {
-        super.update(meal,meal.getId());
+
+    public void update(Meal meal) {
+        log.info("update {} with id={}", meal, meal.getId());
+        assureIdConsistent(meal, meal.getId());
+        service.create(meal,authUserId());
     }
 }
