@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
@@ -21,10 +22,11 @@ public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
     private MealRestController mealRestController;
+    private ApplicationContext context;
 
     @Override
     public void init() {
-        ApplicationContext context = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        context = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         mealRestController = context.getBean(MealRestController.class);
     }
 
@@ -38,7 +40,7 @@ public class MealServlet extends HttpServlet {
                 Integer.parseInt(request.getParameter("calories")));
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        if (idMeal!= null) {
+        if (idMeal != null) {
             mealRestController.update(meal);
         } else {
             mealRestController.create(meal);
@@ -68,8 +70,7 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("meals",
-                        MealsUtil.getTos(mealRestController.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                request.setAttribute("meals", mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -78,5 +79,12 @@ public class MealServlet extends HttpServlet {
     private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
+    }
+
+    @Override
+    public void destroy() {
+        if (context instanceof ClassPathXmlApplicationContext) {
+            ((ClassPathXmlApplicationContext) context).close();
+        }
     }
 }
