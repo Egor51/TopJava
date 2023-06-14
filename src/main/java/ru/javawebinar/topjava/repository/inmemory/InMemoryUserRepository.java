@@ -27,13 +27,14 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        log.info("save {}", user);
-        if (user.isNew()) {
-            user.setId(counter.incrementAndGet());
+            log.info("save {}", user);
+            if (user.isNew() || repository.containsKey(user.getId())) {
+                repository.put(user.isNew() ? setUserId(user) : user.getId(), user);
+            } else {
+                return null;
+            }
+            return user;
         }
-        repository.put(user.getId(), user);
-        return user;
-    }
 
     @Override
     public User get(int id) {
@@ -56,5 +57,11 @@ public class InMemoryUserRepository implements UserRepository {
                 .filter(user -> user.getEmail().equals(email))
                 .findFirst()
                 .orElse(null);
+    }
+
+    private int setUserId(User user) {
+        int id = counter.incrementAndGet();
+        user.setId(id);
+        return id;
     }
 }
