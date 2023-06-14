@@ -8,8 +8,8 @@ import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
-import java.time.LocalDateTime;
-import java.time.Month;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,8 +24,9 @@ public class SpringMain {
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
 
             MealRestController mealController = appCtx.getBean(MealRestController.class);
-            List<MealTo> mealTos = mealController.getMealToFilter(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0),
-                    LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0));
+            List<MealTo> mealTos = mealController.getFiltered(LocalDate.of(2020, 1, 30), LocalDate.of(2020, 1, 31),
+                    LocalTime.of(8, 0),
+                    LocalTime.of(11, 0));
             mealTos.forEach(System.out::println);
         }
     }
