@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
@@ -21,11 +20,11 @@ public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
     private MealRestController mealRestController;
-    private ApplicationContext context;
+    private ConfigurableApplicationContext context;
 
     @Override
-    public void init() throws ServletException {
-        context = new ClassPathXmlApplicationContext("/spring/spring-app.xml");;
+    public void init() {
+        context = new ClassPathXmlApplicationContext("/spring/spring-app.xml");
         mealRestController = context.getBean(MealRestController.class);
     }
 
@@ -33,14 +32,14 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
-        Integer idMeal = id.isEmpty() ? null : Integer.valueOf(id);
-        Meal meal = new Meal(idMeal, LocalDateTime.parse(request.getParameter("dateTime")),
+        Integer mealId = id.isEmpty() ? null : Integer.valueOf(id);
+        Meal meal = new Meal(mealId, LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        if (idMeal != null) {
-            mealRestController.update(idMeal,meal);
+        if (mealId != null) {
+            mealRestController.update(mealId, meal);
         } else {
             mealRestController.create(meal);
         }
@@ -82,8 +81,6 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        if (context instanceof ConfigurableApplicationContext) {
-            ((ConfigurableApplicationContext) context).close();
-        }
+        context.close();
     }
 }
