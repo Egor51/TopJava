@@ -2,11 +2,10 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletException;
@@ -25,8 +24,8 @@ public class MealServlet extends HttpServlet {
     private ApplicationContext context;
 
     @Override
-    public void init() {
-        context = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+    public void init() throws ServletException {
+        context = new ClassPathXmlApplicationContext("/spring/spring-app.xml");;
         mealRestController = context.getBean(MealRestController.class);
     }
 
@@ -41,7 +40,7 @@ public class MealServlet extends HttpServlet {
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         if (idMeal != null) {
-            mealRestController.update(meal);
+            mealRestController.update(idMeal,meal);
         } else {
             mealRestController.create(meal);
         }
@@ -83,8 +82,8 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        if (context instanceof ClassPathXmlApplicationContext) {
-            ((ClassPathXmlApplicationContext) context).close();
+        if (context instanceof ConfigurableApplicationContext) {
+            ((ConfigurableApplicationContext) context).close();
         }
     }
 }
