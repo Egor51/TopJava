@@ -6,11 +6,9 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.util.Collection;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Service
 public class MealService {
@@ -36,8 +34,8 @@ public class MealService {
         return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
-    public void update(Meal meal) {
+    public void update(Meal meal,int userId) {
         checkNotFoundWithId(meal,meal.getId());
-        repository.save(meal, authUserId());
+        repository.save(meal,userId);
     }
 }

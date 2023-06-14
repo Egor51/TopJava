@@ -8,11 +8,15 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static ru.javawebinar.topjava.util.DateTimeUtil.isBetweenHalfOpen;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
+
 @Controller
 public class MealRestController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -40,9 +44,15 @@ public class MealRestController {
         service.delete(id,authUserId());
     }
 
-    public void update(Meal meal) {
+    public void update(int id,Meal meal) {
         log.info("update {} with id={}", meal, meal.getId());
-        assureIdConsistent(meal, meal.getId());
-        service.create(meal,authUserId());
+        assureIdConsistent(meal,id);
+        service.update(meal,authUserId());
+    }
+
+    public List<MealTo> getMealToFilter(LocalDateTime startTime, LocalDateTime endTime){
+        return service.getAll(authUserId()).stream()
+                .filter(mealTo -> isBetweenHalfOpen(mealTo.getDateTime(), startTime, endTime))
+                .collect(Collectors.toList());
     }
 }

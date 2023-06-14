@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
-    private final Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
+    private final Map<Integer, ConcurrentHashMap<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
@@ -21,12 +21,15 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        return repository
-                .computeIfAbsent(userId, ConcurrentHashMap::new)
-                .compute(meal.isNew() ? setMealId(meal) : meal.getId(), (id, oldMeal) -> meal);
-    }
+            ConcurrentHashMap<Integer, Meal> userMeals = repository.computeIfAbsent(userId, k -> new ConcurrentHashMap<>());
+            if (!meal.isNew() && !userMeals.containsKey(meal.getId())) {
+                return null;
+            }
+            userMeals.compute(meal.isNew() ? setMealId(meal) : meal.getId(), (id, oldMeal) -> meal);
+            return meal;
+        }
 
-    @Override
+        @Override
     public boolean delete(int id, int userId) {
         return Optional.ofNullable(repository.get(userId))
                 .map(meals -> meals.remove(id) != null)
