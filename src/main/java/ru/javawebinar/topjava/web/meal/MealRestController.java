@@ -7,25 +7,26 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static ru.javawebinar.topjava.util.DateTimeUtil.isBetweenHalfOpen;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class MealRestController {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     private MealService service;
 
     public List<MealTo> getAll() {
         log.info("getAll");
-        return service.getAll(authUserId());
+        return MealsUtil.getTos(service.getAll(authUserId()),authUserCaloriesPerDay());
     }
 
     public Meal get(int id) {
@@ -47,12 +48,12 @@ public class MealRestController {
     public void update(int id,Meal meal) {
         log.info("update {} with id={}", meal, meal.getId());
         assureIdConsistent(meal,id);
-        service.update(meal,authUserId());
+        service.update(id,meal,authUserId());
     }
 
-    public List<MealTo> getMealToFilter(LocalDateTime startTime, LocalDateTime endTime){
-        return service.getAll(authUserId()).stream()
-                .filter(mealTo -> isBetweenHalfOpen(mealTo.getDateTime(), startTime, endTime))
-                .collect(Collectors.toList());
+    public List<MealTo> getFiltered(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime){
+        log.info("Get filtered meals for user with id={}", authUserId());
+        List<Meal> meals = service.getFilteredDatesTimes(authUserId(), startDate, endDate, startTime, endTime);
+        return MealsUtil.getTos(meals,authUserCaloriesPerDay());
     }
 }
