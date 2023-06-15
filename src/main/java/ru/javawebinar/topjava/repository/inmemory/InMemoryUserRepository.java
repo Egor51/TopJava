@@ -27,14 +27,14 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-            log.info("save {}", user);
-            if (user.isNew() || repository.containsKey(user.getId())) {
-                repository.put(user.isNew() ? setUserId(user) : user.getId(), user);
-            } else {
-                return null;
-            }
+        log.info("save {}", user);
+        if (user.isNew()) {
+            setUserId(user);
+            repository.put(user.getId(), user);
             return user;
         }
+        return repository.computeIfPresent(user.getId(),(id,oldUser)->user);
+    }
 
     @Override
     public User get(int id) {
