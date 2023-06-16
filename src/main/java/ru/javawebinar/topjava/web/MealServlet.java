@@ -7,6 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,8 +24,9 @@ public class MealServlet extends HttpServlet {
     private ConfigurableApplicationContext context;
 
     @Override
-    public void init() {
-        context = new ClassPathXmlApplicationContext("/spring/spring-app.xml");
+    public void init(ServletConfig servletConfig) throws ServletException {
+        super.init(servletConfig);
+        context = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         mealRestController = context.getBean(MealRestController.class);
     }
 
@@ -82,5 +84,6 @@ public class MealServlet extends HttpServlet {
     @Override
     public void destroy() {
         context.close();
+        super.destroy();
     }
 }
