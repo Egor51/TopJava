@@ -43,7 +43,7 @@ public class MealServiceTest {
         LocalDate startDate = LocalDate.of(2023, 6, 16);
         LocalDate endDate = LocalDate.of(2023, 6, 17);
         List<Meal> meals = mealService.getBetweenInclusive(startDate, endDate, USER_ID);
-        assertThat(meals.size()).isEqualTo(2);
+        assertMatch(meals,actual,actual2);
     }
 
     @Test
