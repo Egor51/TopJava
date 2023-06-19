@@ -14,9 +14,11 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
+import static ru.javawebinar.topjava.AssertMatch.assertMatch;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 @ContextConfiguration({
@@ -28,8 +30,6 @@ import static ru.javawebinar.topjava.UserTestData.*;
 public class UserServiceTest {
 
     static {
-        // Only for postgres driver logging
-        // It uses java.util.logging and logged via jul-to-slf4j bridge
         SLF4JBridgeHandler.install();
     }
 
@@ -42,8 +42,8 @@ public class UserServiceTest {
         Integer newId = created.getId();
         User newUser = getNew();
         newUser.setId(newId);
-        assertMatch(created, newUser);
-        assertMatch(service.get(newId), newUser);
+        assertMatch(created, newUser,"registered", "roles");
+        assertMatch(service.get(newId), newUser,"registered", "roles");
     }
 
     @Test
@@ -66,7 +66,7 @@ public class UserServiceTest {
     @Test
     public void get() {
         User user = service.get(USER_ID);
-        assertMatch(user, UserTestData.user);
+        assertMatch(user, UserTestData.user,"registered", "roles");
     }
 
     @Test
@@ -77,19 +77,19 @@ public class UserServiceTest {
     @Test
     public void getByEmail() {
         User user = service.getByEmail("admin@gmail.com");
-        assertMatch(user, admin);
+        assertMatch(user, admin,"registered", "roles");
     }
 
     @Test
     public void update() {
         User updated = getUpdated();
         service.update(updated);
-        assertMatch(service.get(USER_ID), getUpdated());
+        assertMatch(service.get(USER_ID), getUpdated(),"registered", "roles");
     }
 
     @Test
     public void getAll() {
         List<User> all = service.getAll();
-        assertMatch(all, admin, guest, user);
+        assertMatch(all, Arrays.asList(admin, guest, user),"registered", "roles");
     }
 }
