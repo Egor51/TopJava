@@ -9,6 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.javawebinar.topjava.AssertMatch;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
@@ -31,6 +32,7 @@ public class UserServiceTest {
 
     static {
         SLF4JBridgeHandler.install();
+        new AssertMatch("registered", "roles");
     }
 
     @Autowired
@@ -42,8 +44,8 @@ public class UserServiceTest {
         Integer newId = created.getId();
         User newUser = getNew();
         newUser.setId(newId);
-        assertMatch(created, newUser,"registered", "roles");
-        assertMatch(service.get(newId), newUser,"registered", "roles");
+        assertMatch(created, newUser);
+        assertMatch(service.get(newId), newUser);
     }
 
     @Test
@@ -66,7 +68,7 @@ public class UserServiceTest {
     @Test
     public void get() {
         User user = service.get(USER_ID);
-        assertMatch(user, UserTestData.user,"registered", "roles");
+        assertMatch(user, UserTestData.user);
     }
 
     @Test
@@ -77,19 +79,19 @@ public class UserServiceTest {
     @Test
     public void getByEmail() {
         User user = service.getByEmail("admin@gmail.com");
-        assertMatch(user, admin,"registered", "roles");
+        assertMatch(user, admin);
     }
 
     @Test
     public void update() {
         User updated = getUpdated();
         service.update(updated);
-        assertMatch(service.get(USER_ID), getUpdated(),"registered", "roles");
+        assertMatch(service.get(USER_ID), getUpdated());
     }
 
     @Test
     public void getAll() {
         List<User> all = service.getAll();
-        assertMatch(all, Arrays.asList(admin, guest, user),"registered", "roles");
+        AssertMatch.assertMatch(all, admin, guest, user);
     }
 }
