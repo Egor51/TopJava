@@ -17,8 +17,8 @@ import java.util.Map;
 
 @Repository
 public class JdbcMealRepository implements MealRepository {
-
     private static final BeanPropertyRowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
+
     private final JdbcTemplate jdbcTemplate;
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -26,7 +26,8 @@ public class JdbcMealRepository implements MealRepository {
     private final SimpleJdbcInsert insertMeal;
 
     @Autowired
-    public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public JdbcMealRepository(JdbcTemplate jdbcTemplate,
+                              NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("meals")
                 .usingGeneratedKeyColumns("id");
@@ -48,10 +49,10 @@ public class JdbcMealRepository implements MealRepository {
             Number newId = insertMeal.executeAndReturnKey(parameters);
             meal.setId(newId.intValue());
         } else {
-            String updateQuery = "UPDATE meals SET user_id = :user_id, date_time = :date_time, description = :description, calories = :calories WHERE id = :id AND user_id = :user_id";
+            String updateQuery = "UPDATE meals SET user_id = :user_id, date_time = :date_time, " +
+                    "description = :description, calories = :calories WHERE id = :id AND user_id = :user_id";
             namedParameterJdbcTemplate.update(updateQuery, parameters);
         }
-
         return meal;
     }
 
@@ -74,13 +75,13 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        String selectQuery = "SELECT * FROM meals WHERE user_id = ?";
+        String selectQuery = "SELECT * FROM meals_ordered WHERE user_id = ?";
         return jdbcTemplate.query(selectQuery, ROW_MAPPER, userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        String selectQuery = "SELECT * FROM meals WHERE user_id = ? AND date_time >= ? AND date_time < ?";
+        String selectQuery = "SELECT * FROM meals_ordered WHERE user_id = ? AND date_time >= ? AND date_time < ?";
         return jdbcTemplate.query(selectQuery, ROW_MAPPER, userId, startDateTime, endDateTime);
     }
 }
