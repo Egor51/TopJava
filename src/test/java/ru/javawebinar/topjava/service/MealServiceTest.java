@@ -55,7 +55,7 @@ public class MealServiceTest {
     @AfterClass
     public static void printResult() {
         log.info("\n---------------------------------" +
-                "\nTest                 Duration, ms" +
+                "\nMealServiceTest       Duration, ms" +
                 "\n---------------------------------" +
                 results +
                 "\n---------------------------------");
