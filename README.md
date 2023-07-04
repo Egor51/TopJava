@@ -1,244 +1,213 @@
-Java Enterprise Online Project 
-===============================
-Разработка полнофункционального Spring/JPA Enterprise приложения c авторизацией и правами доступа на основе ролей с использованием наиболее популярных инструментов и технологий Java: Maven, Spring MVC, Security, JPA(Hibernate), REST(Jackson), Bootstrap (css,js), DataTables, jQuery + plugins, Java 8 Stream and Time API и хранением в базах данных Postgresql и HSQLDB.
+# Стажировка <a href="https://github.com/JavaWebinar/topjava">Topjava</a>
+## <a href="https://drive.google.com/drive/folders/0B9Ye2auQ_NsFfmctT3oyNW1qaVhDb2p0bGpyTFVlaUJ2VVpOdVgtWF9KTUFBMWFaR2xVYVE">Материалы занятия</a>
 
-![topjava_structure](https://javaops.ru/static/images/projects/top-scheme.jpg)
+## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 1. [Обзор JDK 9/11. Миграция Topjava с 1.8 на JDK 17+](http://javaops.ru/view/resources/jdk8+)
+### Выбрать можно любую версию 17+. Для JDK 17+ обновите IDEA на последнюю версию и Tomcat на 9.x
+> - Проект обновил до JDK 17+. Для запуска Maven или Tomcat переопредели переменную окружения `JAVA_HOME` и переменную `path` на `JAVA_HOME\bin`, чтобы  `java -version` тоже было 17+. Напомню, что IDEA это java процесс. Чтобы новые переменные окружения в ней увиделись, требуется ее перегрузить.
 
-    Когда вы слышите что-то, вы забываете это.
-    Когда вы видите что-то, вы запоминаете это.
-    Но только когда вы начинаете делать это,
-    вы начинаете понимать это
+- [API, ради которых наконец-то стоит обновиться с Java 8 (1)](https://habr.com/ru/post/485750)
+- [API, ради которых наконец-то стоит обновиться с Java 8 (2)](https://habr.com/ru/post/487636)
+- [Руководство по возможностям Java версий 8-19](https://habr.com/ru/post/719744/)
 
-    Старинная китайская поговорка
+#### Apply 5_1_jdk_17.patch
+- Сделал создание коллекций через фабричные методы `List.of`
+- Как пример в `InMemoryMealRepository` использовал *local variable type inference* `var`.
+  - [26 рекомендаций по использованию типа var в Java](https://habr.com/ru/post/438206/)
+- `switch` в `MealServlet` перевел на новый формат (IDEA сама переводит по Alt+Enter). 
+  - [Новые switch выражения](https://habr.com/ru/post/443464/)
+- В `JdbcUserRepository.save` использовал [Text Blocks](https://www.infoq.com/articles/java-text-blocks/)
+- В JDK 17 вместо `.collect(Collectors.toList())` можно использовать `.toList()`. Посмотрите его реализацию.
 
-## <a href="description.md">Описание и план проекта</a>
-### <a href="http://javaops-demo.ru/topjava" target=_blank>Демо разрабатываемого приложения</a>
-### [Изменения проекта (Release Notes)](ReleaseNotes.md)
-### <a href='https://github.com/JavaOPs/topjava/wiki/Стажировка-"Enterprise-Java-разработчик-(TopJava)"'>Требования к участникам, Wiki</a>
-### <a href="cv.md">Составление резюме, подготовка к интервью, поиск работы</a>
+## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png) Разбор домашнего задания HW4
 
-Обновленное вводное занятие (обязательно смотреть все видео)
-===============
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 1. [Вступление, история, команда, источники](doc/video1.md)
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2. [HW4: Meal / JpaMealRepository](https://drive.google.com/file/d/13JJRhLhkn8_C3-xpkyilRxGe_w9_xTF2)
+#### Apply 5_2_HW4.patch
+ - При сравнении еды тесты падают, т.к. Hibernate делает ленивую обертку к `user`, и если происходит обращение к любому его полю (кроме id) вне транзакции, бросается `LazyInitializationException`.
+По логике приложения поле `user` в еде не нужно, и мы не будем его отдавать наружу UI. Более того, включать `user` в запрос будет ошибкой: мы запрашиваем данные, которые приложению не требуются.
+В тестах исключаем `user` из сравнения.  
+ - [SQL “between” not inclusive](https://stackoverflow.com/questions/16347649/sql-between-not-inclusive/16347680)   
 
-## Обзор наиболее востребованных технологий, которые будут изучаться на курсе TopJava
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2.1. [Часть 1: инфраструктура](doc/video2.1.md)
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 3. [Hibernate issue / HW4 Optional](https://drive.google.com/file/d/1kbb2IO15L9ABJ0-2TFJm8XZU_QUXUdni)
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2.2. [Часть 2: frameworks Spring, ORM](doc/video2.2.md)
+#### Apply 5_3_fix_hibernate_issue.patch
+ - Из-за [Hibernate bug with proxy initialization when using `AccessType.FIELD`](https://hibernate.atlassian.net/browse/HHH-3718)
+в `JpaMealRepository.get()` делался дополнительный запрос в базу для инициализации прокси `User`, и мы делали хак: доступ к полю `AbstractBaseEntity.id` через `AccessType.PROPERTY`.
+С версии `5.2.13.Final` загрузка прокси при обращении к `id` управляется флагом `JPA_PROXY_COMPLIANCE` (по умолчанию запрос не делается)
+   - [Call to id getter initializes proxy when using AccessType( "field" ): HHH-3718](https://hibernate.atlassian.net/browse/HHH-3718)
+   - [According to JPA, a Proxy should be loaded even when accessing the identifier: HHH-12034](https://hibernate.atlassian.net/browse/HHH-12034)
+ - <a href="http://stackoverflow.com/questions/594597/hibernate-annotations-which-is-better-field-or-property-access">Which is better, field or property access?</a>
+ - Поправил `equals()` с учетом Lazy-проксирования
+   - <a href="http://stackoverflow.com/questions/5031614/the-jpa-hashcode-equals-dilemma">JPA hashCode()/equals() dilemma</a>
+   - <a href="https://xebia.com/advanced-hibernate-proxy-pitfalls">Hibernate Proxy Pitfalls</a>
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2.3. [Часть 3: тренды](doc/video2.3.md)
+------------------------
+> Переопределять `equals()/hashCode()` необходимо, если
+> - использовать entity в `Set` (рекомендовано для Many-ассоциаций) либо как ключи в `HashMap`
+> - использовать _reattachment of detached instances_ (т.е. манипулировать одним Entity в нескольких транзакциях/сессиях).
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2.3. [Часть 4: обзор разрабатываемого приложения](doc/video2.4.md)
+> [Implementing equals() and hashCode()](https://docs.jboss.org/hibernate/stable/core.old/reference/en/html/persistent-classes-equalshashcode.html)
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 3. [Рекомендуемые подходы к обучению на курсе](doc/video3.md)
+> Оптимально использовать уникальные бизнес-поля, но обычно таких нет, и чаще всего используются PK с ограничением, что он может быть `null` у новых объектов, и нельзя объекты сравнивать через `equals() and hashCode()` в бизнес-логике (например, тестах).
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 4. [Структура приложения (многоуровневая архитектура)](doc/video4.md)
-### [Демо приложения](http://javaops-demo.ru/topjava)
+> [equals() and hashcode() when using JPA and Hibernate](https://stackoverflow.com/questions/1638723)
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 5. [Системы управления версиями. Git](doc/video5-vcs-git.md)</a>
+------------------------
 
-##  ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 6. <a href="https://drive.google.com/file/d/0B9Ye2auQ_NsFZDdaaU5fZEo4X3c/view?resourcekey=0-DvpzWIlMHZ7KX_v1SMuiAw">Работа с проектом (выполнять инструкции)</a>
-- **ВНИМАНИЕ: выбирайте для проекта простой пусть без пробелов и русских букв, например, `c:\projects\topjava\` (Windows). Иначе впоследствии будут проблемы**
-- **Плагин Git Intergation уже не требуется, а вкладку `Version control` в IDEA переименовали в `Git`**
+> ![question](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Почему над `AbstractBaseEntity` стоит `@Access(AccessType.FIELD)` ? Почему при запросе `user.id` нам не нужно вытаскивать его из базы?
 
-Для переключения режима отображения изменений из вкладки `Commit` в `Git: Local Changes` нужно переключить `Settings/Preferences | Version Control | Commit | Use non-modal commit interface` или в контекстном меню вкладки `Commit`:
+`AccessType.FIELD` делает доступ в `AbstractBaseEntity` и всех классах-наследниках по полям. При загрузке `Meal` Hibernate на основе поля `meal.user_id` делает ленивую прокси к `User`, у которой нет ничего, кроме id.
 
-![image](https://user-images.githubusercontent.com/13649199/105491518-72d8f300-5cc7-11eb-8b79-c46382562deb.png)  ![image](https://user-images.githubusercontent.com/13649199/105488663-05c35e80-5cc3-11eb-962e-30f403d623e8.png)
+#### Apply 5_4_HW4_optional.patch
+- <a href="http://stackoverflow.com/questions/14892125/what-is-the-best-practice-to-determine-the-execution-time-of-the-bussiness-relev#27868954">Stopwatch</a>
+- [Logback layouts coloring](https://logback.qos.ch/manual/layouts.html#coloring)
+- Дополнительно: [use colored output only when logging to a real terminal](https://stackoverflow.com/questions/31046748)
 
-### Патч [prepare_to_HW0.patch](https://drive.google.com/file/d/1LNPpu9OkuCpfpD8ZJHO-o0vwu49p2i5M) (скачать и положить в каталог вашего проекта)
+## Занятие 5:
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 4. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFZENCVEhDMkZiV00">Транзакции</a>
+-  <a href="https://ru.wikipedia.org/wiki/Транзакция_(информатика)">wiki Транзакция</a>
+-  <a href="https://jira.spring.io/browse/DATAJPA-601">readOnly и Propagation.SUPPORTS</a>
+-  [@Transactional In-Depth](https://www.marcobehler.com/guides/spring-transaction-management-transactional-in-depth)
+- Ресурсы:
+  - [Транзакции в Spring Framework](https://medium.com/@kirill.sereda/%D1%82%D1%80%D0%B0%D0%BD%D0%B7%D0%B0%D0%BA%D1%86%D0%B8%D0%B8-%D0%B2-spring-framework-a7ec509df6d2)
+  - <a href="https://dzone.com/articles/how-does-spring-transactional">How does Spring @Transactional Really Work</a>
+  - <a href="http://web.archive.org/web/20170314073834/https://www.ibm.com/developerworks/ru/library/j-ts1/index.html">Стратегии работы с транзакциями: распространенные ошибки</a>
+  - <a href="http://stackoverflow.com/questions/8490852/spring-transactional-isolation-propagation">Spring @Transactional - isolation, propagation</a>
 
-> Проект постоянно улучшается, поэтому видео иногда отличается от кода проекта. Изменения указываю после видео: 
-> - переименовал класс `UserMealWithExceed` и его поле `exceed` в `UserMealWithExcess.excess`
-> - в `UserMeals/UserMealWithExcess` поля изменились на `private`
-> - обновил данные `UserMealsUtil.meals` и переименовал некоторые переменные, поля и методы
-> - добавил `UserMealWithExcess.toString()` и метод для выполнения _Optional домашнего задания_
-> - метод фильтрации в `TimeUtil` переименовал в `isBetweenHalfOpen` (также изменилась логика сравнения: `startTime` включается в интервал, а `endTime` - не включается) 
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 5. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFNW0yVWhXcGNPU2M">Профили Maven и Spring</a>
+#### Apply 5_5_profiles_connection_pool.patch
+> - `SLF4JBridgeHandler` перенес в профиль `postgres` (если логировать драйвер не нужно, то и он не нужен) 
+> - **Галочка в XML-профиле влияет только на отображение в IDEA и никак не влияет на выполнение кода.**
+> - `Profiles.ACTIVE_DB` задает активный профиль базы (postgres/hsqldb)
+> - `Profiles.REPOSITORY_IMPLEMENTATION` определяет реализацию репозитория при запуске приложения (для тестов задаются через `@ActiveProfiles`).
 
-### GitHub поменял политику: теперь пушить нужно через токен. IDEA предложит его сгенерировать при пуше, или можно [создать токен в настройках](https://www.jetbrains.com/help/idea/github.html#register-account)
-- [Способы авторизации в GitHub](https://topjava.ru/blog/vvedeniye-v-git-github-ustanovka-i-nastroyka#6)
+> Для переключения на HSQLDB необходимо:
+>  - поменять в окне Maven Projects профиль (Profiles) - выключить `postgres`, включить `hsqldb` -  и сделать `Reimport All Maven Projects` (1-я кнопка)
+>  - поменять `Profiles.ACTIVE_DB = HSQLDB`
+>  - почистить проект `mvn clean` (фаза `clean` не выполняется автоматически, чтобы каждый раз не перекомпилировать весь проект)
+
+Для корректного отображения неактивного профиля в IDEA проверьте флаг _Inactive profile highlighting_ и сделайте проекту clean
  
-##  Инструкция по шагам (из видео):</h3>
--  <a href="http://javaops.ru/view/soft">Установить ПО (Git, JDK8, IntelliJ IDEA, Maven)</a>
--  Создать аккаунт на <a href="https://github.com">GitHub</a>
--  Сделать Fork **ЭТОГО** проекта (https://github.com/JavaOPs/topjava) </a>
--  Сделать локальный репозиторий проекта:
-            <pre>git clone https://github.com/[Ваш аккаунт]/topjava.git</pre>
+![image](https://cloud.githubusercontent.com/assets/13649199/25120020/29935958-2425-11e7-8363-1ff027426f64.png)
 
-> Вместо Fork можно сделать [клонирование проекта](https://github.com/JavaOPs/topjava/wiki/Git#user-content-Клонирование-проекта): он не будет привязан к исходному https://github.com/JavaOPs/topjava и у него не будет истории.
+> Вопрос: почему после этого патча не поднимается Spring при запуске приложения в Tomcat? (будем чинить в ДЗ, п.6)
+ 
+- <a href="https://dzone.com/articles/using-spring-profiles-xml">Using Spring Profiles in XML Config</a>
+- <a href="https://www.mkyong.com/spring/spring-profiles-example/">Spring Profiles example</a>
 
-- Открыть и настроить проект в IDEA
-   - <a href="http://stackoverflow.com/questions/29695918/intellij-idea-console-issue#33035499">Выставить кодировку UTF-8 в консоли</a>
-   - <a href="https://github.com/JavaOPs/topjava/wiki/IDEA#%D0%9F%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-%D0%BA%D0%BE%D0%B4%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D1%83-utf-8">Поставить кодировку UTF-8</a>
-   - Опционально: <a href="https://github.com/JavaOPs/topjava/wiki/IDEA#%D0%9F%D0%BE%D0%BC%D0%B5%D0%BD%D1%8F%D1%82%D1%8C-%D1%84%D0%BE%D0%BD%D1%82-%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E-dejavu">поменять шрифт по умолчанию на DejaVu</a> или на **новый [JetBrains Mono](https://habr.com/ru/company/jugru/news/t/484134/)**
--  По ходу видео сделать `Apply Patch...` скачанного патча `Prepare_to_HW0.patch`
--  Закоммитить и запушить изменения (`commit` + `push`)
--  Сделать ветку домашнего задания
--  Выполнить задание и залить на GitHub (`commit` + `push`)
--  Переключиться в основную ветку проекта `master`.
+### Автоматический выбор профиля базы: [`ActiveProfilesResolver`](http://stackoverflow.com/questions/23871255/spring-profiles-simple-example-of-activeprofilesresolver)
+#### Apply 5_6_profile_resolver.patch
+> Сделал автоматический выбор профиля базы при запуске приложения (тестов) в зависимости от присутствия драйвера базы в classpath (`ActiveDbProfileResolver`)    
+> В профили аттрибута `@ActiveProfiles(profiles=..)` добавляем `Profiles.getActiveDbProfile()`
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 7. [Maven](https://drive.google.com/file/d/1qEJTwv9FNUQjx-y9MSydH01xaAne0-hu)
-- [Руководство по Maven](https://topjava.ru/blog/apache-maven-osnovy-1)
-- Wiki: [Apache Maven](https://ru.wikipedia.org/wiki/Apache_Maven)
-- [The Central Repository](http://search.maven.org)
-- Дополнительно:
-    - [Мой Wiki по Maven](https://github.com/JavaOPs/topjava/wiki/Maven)
-    - [Основы Maven](https://www.youtube.com/watch?v=0uwMKktzixU)
-    - JavaRush: [Основы Maven](https://javarush.ru/groups/posts/2523-chastjh-4osnovih-maven)
-    - Инструмент сборки проектов [Maven](https://www.examclouds.com/ru/java/java-core-russian/lesson20)
-    - [Maven Getting Started Guide](https://maven.apache.org/guides/getting-started/index.html)
-    - [Видео: Maven vs Gradle vs SBT (Архипов, Борисов, Садогурский)](https://www.youtube.com/watch?v=21qdRgFsTy0)
-    - [Build Lifecycle](http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html)
-    - [Dependency Mechanism](http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html)
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 6. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFTWJOdHduOWtNcTA">Пул коннектов</a>
+![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) [Александр Колесников - JDBC Pools Battle](https://www.youtube.com/watch?v=J9GzE2qlNuM&feature=youtu.be&t=2895) (ссылка на выводы)
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 8. [Как правильно относиться к техзаданию (ТЗ). Полуоткрытый интервал.](https://drive.google.com/file/d/1BpTzjNFjS0TSekCyt_xvt6YoLvuw5KTZ)
-- [Типы промежутков](https://ru.wikipedia.org/wiki/Промежуток_(математика))
+>  [BoneCP to be deprecated ](https://stackoverflow.com/a/1662916/548473)
+-  Выбор реализации пула коннектов: <a href="https://commons.apache.org/proper/commons-dbcp/">Commons Database Connection Pooling</a>, <a href="https://github.com/brettwooldridge/HikariCP">HikariCP</a>
+-  <a href="https://habrahabr.ru/post/269023/">Самый быстрый пул соединений на java (читаем комменты)</a>
+-  <a href="http://blog.ippon.fr/2013/03/13/improving-the-performance-of-the-spring-petclinic-sample-application-part-3-of-5">Tomcat pool</a>
 
-## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png) Домашнее задание HW0
 
-### ВНИМАНИЕ: НЕ НАДО в репозиторий делать Pull Request со своими решениями! См. видео выше ("Работа с проектом")
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 7. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFYVdyMFYxRUR6bWM">Spring Data JPA</a>
 
-Реализовать метод `UserMealsUtil.filteredByCycles` через циклы (`forEach`):
--  должны возвращаться только записи между `startTime` и `endTime`
--  поле `UserMealWithExcess.excess` должно показывать, превышает ли сумма калорий за весь день значение `caloriesPerDay`
-        
-Т. е. `UserMealWithExcess` - это запись одной еды, но поле `excess` будет одинаково для всех записей за этот день.
-    
-> - Проверьте результат выполнения ДЗ (можно проверить логику в [http://javaops-demo.ru/topjava](http://javaops-demo.ru/topjava), список еды)
-> - Оцените Time complexity алгоритма. Если она больше O(N), например O(N*N) или N*log(N), сделайте O(N).  
-> **Внимание: внимательно прочитайте про O(N). O - это любой коэффициент, 2*N это тоже O(N).**
+#### Apply 5_7_spring_data_jpa.patch
+> - Переименовал классы _Proxy_ на более адекватные _Crud_, убрал _Impl_
+> - В `spring-framework-bom` мы уже задали версию Spring. Убрал из остальных зависимостей.
+> - В spring-data-jpa 2.x поменялся интерфейс: `T CrudRepository.findOne(ID id)` -> `Optional<T> CrudRepository findById(ID id)`
+>   - [Java Optional — Отец холиваров](http://sboychenko.ru/java-optional)
+>   - [Optonal от Oracle](https://stuartmarks.files.wordpress.com/2016/09/optionalmotherofallbikesheds3.pdf)
+>   - [Java 8 Optional In Depth](https://www.mkyong.com/java8/java-8-optional-in-depth/)
+> - Не стал переопределять в `CrudUserRepository` методы `JpaRepository` (для явного указания всех используемых методов). Обычно этого не делают.
 
--  <a href="http://www.mscharhag.com/2014/02/java-8-datetime-api.html">Java 8 Date and Time API</a>
--  <a href="http://web.archive.org/web/20201128101944/https://tproger.ru/translations/algorithms-and-data-structures/">Алгоритмы и структуры данных для начинающих: сложность алгоритмов</a>
--  [Сложность алгоритмов и Big O Notation](https://threadreaderapp.com/thread/1470666237286010881)
--  [Головач: сложность алгоритмов в теме коллекций](https://www.youtube.com/watch?v=Ek9ijOiplNE&feature=youtu.be&t=778)
--  <a href="https://drive.google.com/file/d/0B9Ye2auQ_NsFNEJWRFJkVDA3TkU/view?usp=sharing&resourcekey=0-MPCuoLVdSLiSc7hlE2jefQ">Time complexity</a>
--  <a href="https://ru.wikipedia.org/wiki/Временная_сложность_алгоритма">Временная сложность алгоритма</a>
--  <a href="https://ru.wikipedia.org/wiki/Вычислительная_сложность">Вычислительная сложность</a>
+### Внимание: при обновлении версий не забудьте обновить зависимости Maven и сделать `clean`.
 
-#### ВНИМАНИЕ: варианты Optional делайте в одной ветке в разных методах `UserMealsUtil`. Проще делать, проще проверять
+-  <a class="anchor" id="datajpa"></a><a href="http://projects.spring.io/spring-data-jpa/">Spring Data JPA</a>
+-  Замена AbstractDAO: <a href="http://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.repositories">JPA Repositories</a>
+-  Разрешение зависимостей: <a href="http://howtodoinjava.com/2014/02/18/maven-bom-bill-of-materials-dependency/">Maven BOM [Bill Of Materials] Dependency</a>
+-  <a href="https://habrahabr.ru/post/232381/#datajpa">Делегирование (в конце статьи)</a>
+-  <a href="https://spring.io/blog/2011/02/10/getting-started-with-spring-data-jpa">Getting started with Spring Data JPA</a>
+-  <a href="http://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation">Query methods</a>
+-  <a href="http://jeeconf.com/archive/jeeconf-2013/materials/spring-data/">Spring Data – новый взгляд на persistence (JeeConf)</a>
+-  <a href="https://www.youtube.com/watch?v=nwM7A4TwU3M">Евгений Борисов — Spring Data? Да, та!</a>
+-  Ресурсы:
+   -  <a href="https://github.com/spring-projects?query=spring-data">Github repositories</a>
+   -  <a href="http://www.petrikainulainen.net/spring-data-jpa-tutorial">Spring Data JPA Tutorial</a>
+   -  [Spring Data JPA with QueryDSL](https://dontpanic.42.nl/2011/06/spring-data-jpa-with-querydsl.html)
+   -  [SpEL support in Spring Data JPA @Query](https://spring.io/blog/2014/07/15/spel-support-in-spring-data-jpa-query-definitions)
 
-### Optional (Java 8 Stream API)
-```
-Реализовать метод `UserMealsUtil.filteredByStreams` через Java 8 Stream API.
-```
--  <a href="http://www.youtube.com/watch?v=_PDIVhEs6TM">Видео: Доступно о Java 8 Lambda</a>
--  <a href="https://devcolibri.com/java-8-killer-features-%D1%87%D0%B0%D1%81%D1%82%D1%8C-1/">Java 8: Lambda выражения</a>
--  <a href="https://devcolibri.com/java-8-killer-features-%D1%87%D0%B0%D1%81%D1%82%D1%8C-2/">Java 8: Потоки</a>
--  <a href="https://javadevblog.com/polnoe-rukovodstvo-po-java-8-stream.html">Pуководство по Java 8 Stream</a>
--  [Полное руководство по Java 8 Stream API в картинках и примерах](https://annimon.com/article/2778)    
--  [7 способов использовать groupingBy в Stream API](https://habrahabr.ru/post/348536)
--  <a href="http://habrahabr.ru/post/224593/">Лямбда-выражения в Java 8</a>
--  <a href="https://github.com/winterbe/java8-tutorial">A Guide to Java 8</a>
--  <a href="http://habrahabr.ru/company/luxoft/blog/270383/">Шпаргалка Java Stream API</a>
--  <a href="https://www.youtube.com/watch?v=hEyCK4ueBlc">Алексей Владыкин: Элементы функционального программирования в Java</a>
--  <a href="https://www.youtube.com/watch?v=iD8H7cmxw_w">Yakov Fain о новом в Java 8</a>
--  <a href="http://stackoverflow.com/questions/28319064/java-8-best-way-to-transform-a-list-map-or-foreach">stream.map vs forEach</a
--  [Руководство по Java Stream в Java 8](https://javarush.com.ua/groups/posts/3974-kofe-breyk-177-podrobnoe-rukovodstvo-po-java-stream-v-java-8)
--  Дополнительно
-   - [Сергей Куксенко — Stream API, часть 1](https://www.youtube.com/watch?v=O8oN4KSZEXE)
-   - [Сергей Куксенко — Stream API, часть 2](https://www.youtube.com/watch?v=i0Jr2l3jrDA)
+## ![question](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Ваши вопросы
+> Какой паттерн проектирования применён в классе DataJpaUserRepository (декоратор/адаптер/прокси/другой)?:
 
-### Optional 2 (+5 бонусов, только после выполнения базового и Optional задания!)
-- циклом за 1 проход по `List<UserMeal>`
-    - без циклов по другим коллекциям/массивам (к ним также относим методы коллекций `addAll()/removeAll()`)
-- через Stream API за 1 проход по исходному списку `meals.stream()`
-    - нельзя использовать внешние коллекции, не являющиеся частью коллектора
-  - возможно дополнительные проходы по частям списка, при этом превышение должно считаться один раз для всего подсписка. Те например нельзя разбить список на на 2 подсписка с четными и нечетными датами и затем их объединить, с подсчетом превышения для каждого элемента.
+Вопрос интересный:) Ближе всего к адаптеру, но по логике композиция с делегированием. Мы просто используем для нашей реализации возможности `data-jpa: CrudUserRepository`.
+Делегат интерфейсов не меняет, а прокси похож на делегата, но служит для неявной подмены (часто прямо в рантайм). См. [ПАТТЕРНЫ
+ПРОЕКТИРОВАНИЯ](https://refactoring.guru/ru/design-patterns)
 
-Временная сложность реализации должна быть O(N) (обратите внимание на п. 13 замечаний)  
-Решение должно быть рабочим в общем случае (должно работать в приложении с многими пользователями, не только при запуске `main`)  
-Нельзя 2 раза проходить по исходному списку (в том числе по его отфильтрованной или преобразованной копии)
+> В <a href="https://github.com/spring-projects/spring-petclinic/tree/master/src/main/java/org/springframework/samples/petclinic">spring-petclinic</a> `DataJpa` реализована без дополнительных классов. В таком виде как у них, spring data смотрится, конечно, намного лаконичней других реализаций, но у нас получилось  вдвое больше кода, чем с тем же jpa или jdbc. Плюс только пожалуй в том, что query находятся прямо в репозитории, а  не где-то там в другом пакете. Так что получается, spring data лучше подходит для простейших crud без всяких "фишек"? или в чем его достоинство для больших и сложных проектов?
 
-Ресурсы:
-- [Baeldung: Custom Collectors](https://www.baeldung.com/java-8-collectors#Custom)
-- [Руководство по Java 8 Stream API: Collector](https://annimon.com/article/2778#collector)
-- [Хватит писать циклы! Топ-10 лучших методов для работы с коллекциями из Java 8](https://javarush.ru/groups/posts/524-khvatit-pisatjh-ciklih-top-10-luchshikh-metodov-dlja-rabotih-s-kollekcijami-iz-java8)
-- [Понять Java Stream API](https://vc.ru/u/604567-yerlan-akzhanov/194409-ponyat-java-stream-api)
+Достоинства DATA-JPA по сравнению, например, с JPA: есть типизация, готовые реализации типовых методов CRUD, а также paging, data-common. Мы можем переключить реализацию JPA, например, на mongoDb (`PagingAndSortingRepository`, от которого наследуется `JpaRepository`, находится в `spring-data-common`).
+Соответственно, его методы будут поддерживаться всеми реализациями `spring-data-common` (JPA - одна из них) и пр. Подробнее о них есть в видео <a href="http://jeeconf.com/archive/jeeconf-2013/materials/spring-data/">Spring Data – новый взгляд на persistence</a>.
+Дополнительное проксирование в DATA-JPA - моя "фишка" для устранения минусов этого фреймворка: невозможность дебага, привязка к интерфейсу JpaRepository, перенос логики Repository в слой сервисов.
+Для большого приложения выигрыш этого стоит. Для небольших (тестовых) приложений (например выпускного) дополнительных классов делать не нужно.
 
-### Замечания по использованию Stream API:
-- Когда встречаешь что-то непривычное, приходится перестраивать мозги. Например, переход с процедурного на ООП-программирование дается непросто. Те, кто не знает шаблонов (и не хотят учить), также их встречают плохо. Хорошая новость в том, что если это принять и начать использовать, то начинаешь получать от этого удовольствие. И тут главное не впасть в другую крайность:
-  - [Используйте Stream API проще (или не используйте вообще)](https://habrahabr.ru/post/337350/)
-- Если вас беспокоит производительность стримов, обязательно прочитайте про оптимизацию 
-    - ["Что? Где? Когда?"](http://optimization.guide/intro.html)
-    - [Перформанс: что в имени тебе моём?](https://habrahabr.ru/company/jugru/blog/338732/)
-    - [Performance это праздник](https://habrahabr.ru/post/326242/)
-    
-При использовании Stream API производительность улучшится только на больших задачах, где возможно распараллеливание.
-Еще: просто так запустить и померить скорость JVM нельзя (как минимум надо дать прогреться и запустить очень большое число раз). Лучше использовать какие-нибудь бенчмарки, например [JMH](http://tutorials.jenkov.com/java-performance/jmh.html), который мы используем на другом проекте (Mastejava).
-  
-## ![error](https://cloud.githubusercontent.com/assets/13649199/13672935/ef09ec1e-e6e7-11e5-9f79-d1641c05cbe6.png) Замечания к HW0
-- 1: Код проекта менять можно! Одна из распространенных ошибок как в тестовых заданиях на собеседовании, так и при работе на проекте, что ничего нельзя менять. Конечно, при правках в рабочем проекте обязательно нужно проконсультироваться/проревьюироваться у авторов кода (находятся по истории VCS)
-- 2: Наследовать `UserMealWithExcess` от `UserMeal` нельзя, т. к. это разные сущности: Transfer Object и Entity. Мы будем их проходить на 2-м уроке. Это относится и к их зависимости друг от друга.
-- 3: Правильная реализация должна быть простой и красивой, можно сделать 2-мя способами: через стримы и через циклы. Сложность должна быть O(N), т. е. без вложенных стримов и циклов.
-- 4: При реализации через циклы посмотрите в `Map` на методы `getOrDefault` или `merge`
-- 5: **При реализации через `Stream` заменяйте `forEach` оператором `stream.map(..)`**
-- 6: Объявляйте переменные непосредственно перед использованием (если возможно - сразу с инициализацией). При объявлении коллекций в качестве типа переменной используйте интерфейс (Map, List, ..)
-- 7: Если IDEA предлагает оптимизацию (желтым подчеркивает), например, заменить лямбду на ссылку на метод (method reference), соглашайтесь (Alt+Enter)
-- 8: Пользуйтесь форматированием кода в IDEA: `Alt+Ctrl+L`
-- 9: Перед check-in (отправкой изменений на GitHub) просматривайте внесенные изменения (Git -> [Log](https://www.jetbrains.com/help/idea/log-tab.html) -> курсор на файл и Ctrl+D): не оставляйте в коде ничего лишнего (закомментированный код, TODO и пр.). Если файл не меняется (например только пробелы или переводы строк), не надо его чекинить, делайте ему `revert` (Git -> Revert / `Ctrl+Alt+Z`).
-- 10: `System.out.println` нельзя использовать нигде, кроме как в `main`. Позже введем логирование.
-- 11: Результаты, возвращаемые `UserMealsUtil.filteredByStreams`, мы будем использовать [в нашем приложении](http://javaops-demo.ru/topjava) для фильтрации по времени и отображения еды правильным цветом.
-- 12: Обращайте внимание на комментарии к вашим коммитам в Git. Они должны быть короткие и информативные (лучше на english)
-- 13: Не полагайтесь в решении на то, что список еды будет подаваться отсортированным. Такого условия нет.
------
+> Почему мы для InMemory не сделали отдельного профиля? Почему их не удалить вообще?
 
->  - ДЗ первого урока будет связано с созданием небольшого [CRUD](https://ru.wikipedia.org/wiki/CRUD)-приложения (в памяти, без базы данных) на JSP и сервлетах
->  - основы JavaScript необходимы для понимания проекта, начиная с 8-го занятия
+Реализация InMemory является примером, как в test делать подмену контекста. Для них сделали отдельный `inmemory.xml`, и запускаемый проект ничего не должен о них знать. У нас учебный проект, в котором 4 реализации репозиториев, в реальном такого не будет.
 
-### Полезные ресурсы
-#### HTML, JavaScript, CSS 
-- [Basic HTML and HTML5](https://learn.freecodecamp.org/responsive-web-design/basic-html-and-html5/say-hello-to-html-elements/)
-- [Справочник по WEB](https://developer.mozilla.org/ru/)
-- [Видео по WEB-технологиям](https://www.youtube.com/user/WebMagistersRu/playlists)
-- [Изучение JavaScript в одном видеоуроке за час](https://www.youtube.com/watch?v=QBWWplFkdzw)
-- <a href="http://www.w3schools.com/default.asp">HTML, CSS, JAVASCRIPT, SQL, JQUERY, BOOTSTRAP</a>
-- <a href="https://www.youtube.com/watch?v=j0ycGQKqMT4">Введение в программирование на JavaScript</a>
-- <a href="http://anton.shevchuk.name/javascript/html-css-javascript-standarts/">Стандарты кодирования для HTML, CSS и JavaScript’a</a>
-- <a href="http://www.intuit.ru/studies/courses/1102/134/info">Основы работы с HTML/CSS/JavaScript</a>
-- <a href="http://itchief.ru/lessons/javascript/94-javascript-introduction">JavaScript - Основы</a>
-- <a href="http://learn.javascript.ru/first-steps">Основы JavaScript</a>
-- <a href="http://itchief.ru/lessons/bootstrap-3/19-introduction-to-twitter-bootstrap-3">Bootstrap 3 - Основы</a>
-- <a href="http://anton.shevchuk.name/jquery/">jQuery для начинающих</a>
+> А как делать транзакционность для реализации jdbc?
 
-#### Java (базовые вещи)
-- [Сборник видео "Изучаем Java"](https://www.youtube.com/playlist?list=PLyxk-1FCKqockmP-fXZmHQ7UlYP3qvZRa)
-- <a href="https://github.com/JavaOPs/masterjava#Первое-занятие-многопоточность">1-й урок MasterJava: Многопоточность</a>
-- [Основы Java garbage collection](http://web.archive.org/web/20180831013112/https://ggenikus.github.io/blog/2014/05/04/gc)
-- <a href="https://habrahabr.ru/post/134102/">Размер Java объектов</a>
-- <a href="http://www.quizful.net/post/java-reflection-api">Введение в Java Reflection API</a>
-- <a href="https://habrahabr.ru/users/tarzan82/topics/">Структуры данных в картинках</a>
-- <a href="https://habrahabr.ru/company/luxoft/blog/157273/">Обзор java.util.concurrent.*</a>
-- <a href="http://web.archive.org/web/20200808064416/http://www.skipy.ru/technics/synchronization.html">Синхронизация потоков</a>
-- <a href="http://java67.blogspot.ru/2014/08/difference-between-string-literal-and-new-String-object-Java.html">String literal pool</a>
-- <a href="https://habrahabr.ru/post/132241/">Маленькие хитрости Java</a>
--  <a href="https://github.com/winterbe/java8-tutorial">A Guide to Java 8</a>
+Будем делать на следующем уроке.
 
-### Туториалы, разное
-- [Открытый курс: Spring Boot + HATEOAS](https://javaops.ru/view/bootjava)
-- [Что нужно знать о бэкенде новичку в веб-разработке](https://tproger.ru/translations/backend-web-development)
-- [Туториалы: Spring Framework, Hibernate, Java Core, JDBC](http://proselyte.net/tutorials/)
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 8. [Spring кэш](https://drive.google.com/file/d/1xpuL2YscL1ounS_qFRb1qzLciEOKn9I4/view?usp=sharing)
+#### Apply 5_8_spring_cache.patch
+- [Wiki Кэш](https://ru.wikipedia.org/wiki/Кэш)
+  - [Spring Cache Abstraction](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache)
+  - [ECache](https://www.ehcache.org)
+  - [Configuring the Cache Storage](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache-store-configuration)
+- [Spring 3.1 новый механизм кеширования](https://russianblogs.com/article/75981527090/)
+- [Spring 4+ with Ehcache 3 – how to](https://imhoratiu.wordpress.com/2017/01/26/spring-4-with-ehcache-3-how-to/)
+- [Evict Ehcache elements programmatically, using Spring](https://stackoverflow.com/questions/29557959/evict-ehcache-elements-programmatically-using-spring)
+- Дополнительно: [Оптимизация запросов с использованием Spring cache и Bean scope](https://www.youtube.com/watch?v=P7nCQepVk_Y&list=PL6rimDLSyfe947bGsCviqIIYGofeFYQTM)
+--------------------
 
-#### Сервлеты
--  <a href="https://devcolibri.com/как-создать-servlet-полное-руководство/">Как создать Servlet? Полное руководство.</a>
--  [Сервлеты](https://metanit.com/java/javaee/4.1.php)
+## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png) Домашнее задание HW05
 
-#### JDBC, SQL
--  <a href="https://habrahabr.ru/post/123636/">Основы SQL на примере задачи</a>
--  <a href="https://www.youtube.com/playlist?list=PLIU76b8Cjem5qdMQLXiIwGLTLyUHkTqi2">Уроки по JDBC</a>
--  <a href="https://www.codecademy.com/learn/learn-sql">Learn SQL</a>
--  <a href="http://www.intuit.ru/studies/courses/5/5/info">Интуит. Основы SQL</a>
--  <a href="http://campus.codeschool.com/courses/try-sql/contents">Try SQL</a>
--  <a href="https://stepic.org/course/Введение-в-базы-данных-551">Курс "Введение в базы данных"</a>
+- 1: Имплементировать `DataJpaMealRepository` и протестировать через `MealServiceTest`. 
+#### MealServlet не работает (почему?), чиним в _Optional п.5_
+- 2: Разделить реализации Repository по профилям Spring: `jdbc`, `jpa`, `datajpa` (общее в профилях можно объединять, например, `<beans profile="datajpa,jpa">`).
+  - 2.1: Профили выбора DB (`postgres/hsqldb`) и реализации репозитория (`jdbc/datajpa/jpa`) независимы друг от друга, и при запуске приложения (тестов) нужно задать тот, и другой.
+  - 2.2: Удобно для интеграции с IDEA выставить в `spring-db.xml` справа вверху в `Change Profiles...` профили, например, `datajpa, postgres`. **Это влияет ТОЛЬКО на отображение в IDEA и НИКАК на работу приложения и тестов**
+  - 2.3: Общие части для всех в `spring-db.xml` можно оставить как есть без профилей вверху файла **(до первого `<beans profile=` !!!)**.   
+Профили делаем в `spring-db.xml` (это не Maven профили, pom.xml не меняем). Здесь мы конфигурируем бины, которые попадут в spring context. Профилями можно переключать, что попадет в context, что нет. Профилями Maven мы меняем в проекте подгружаемые зависимости. Если у вас в `spring-db.xml` что-то красное - значит этих классов нет в зависимостях, это НЕ ошибка. Spring о профилях в Maven НИКАК не догадывается: в IDEA нужно вручную наверху нужные профили задавать, в приложении и тестах - указывать, с какими профилями запускается приложение.
+- 3: Сделать тесты всех реализаций (`jdbc, jpa, datajpa`) через наследование (без дублирования).
+  -  3.1 **сделать общий базовый класс для `MealServiceTest` и `UserServiceTest`**.
+  -  3.2 сводку по времени выполнения тестов также сделать для `user`
+- 4: Проверить запуск всех тестов: `mvn test` (в IDEA Maven Lifecycle - `test`, кнопку `skipTest` отжать).
+#### `Jdbc` реализация не работает с `hsqldb`. Чиним в _Optional п.6_
 
-#### Разное
--  <a href="http://javaops.ru/view/test">Вопросы по собеседованию, ресурсы для подготовки</a>
--  <a href="http://jeeconf.com/materials/intellij-idea/">Эффективная работа с кодом в IntelliJ IDEA</a>
--  <a href="http://www.quizful.net/test">Quizful- тесты онлайн</a>
--  <a href="https://stepic.org/course/Введение-в-Linux-73">Введение в Linux</a>
+### Optional
 
-#### Книги
--  <a href="http://www.ozon.ru/context/detail/id/24828676/">Джошуа Блох: Java. Эффективное программирование. Второе издание</a>
--  <a href="http://www.labirint.ru/books/87603/">Гамма, Хелм, Джонсон: Приемы объектно-ориентированного проектирования. Паттерны проектирования</a>
--  <a href="http://www.bookvoed.ru/book?id=639284">Редмонд Э.: Семь баз данных за семь недель. Введение в современные базы данных и идеологию NoSQL</a>
--  <a href="http://www.ozon.ru/context/detail/id/3174887/">Brian Goetz: Java Concurrency in Practice</a>
--  <a href="http://bookvoed.ru/book?id=2593572">G.L. McDowell: Cracking the Coding Interview</a>
+- 5: Починить `MealServlet` и использовать в `SpringMain` реализацию DB: добавить профили. Попробуйте поднять Spring контекст без использования `spring.profiles.active`.
+- 6: Разделить `JdbcMealRepository` для HSQLDB (она не умеет работать с Java8 Time API) и Postgres через `@Profile` (для Postgres оставить `LocalDateTime`). 
+  - Цель задания - потренироваться с [паттерном "шаблонный метод"](https://refactoring.guru/ru/design-patterns/template-method) и профилями Spring. 
+Какие бины Spring попадут в контекст зависит от выставления активных профилей при запуске (`@ActiveProfiles` в тестах) и конфигурации, где задаются бины для каждого профиля.
+Абстрактные классы не создаются и в контекст не попадают. 
+  - После выполнения разделения на основе профилей, можно предложить решение проще.
+- 7: Сделать и протестировать в сервисах методы (тесты и реализация - только для `DataJpa`):
+  - 7.1:  достать по `id` пользователя вместе с его едой
+  - 7.2:  достать по `id` и `userId`  еду вместе с пользователем
+  - 7.3:  обращения к DB сделать в одной транзакции (можно сделать разные варианты). <a href="https://en.wikibooks.org/wiki/Java_Persistence/OneToMany">Java Persistence/OneToMany</a>
+
+---------------------
+### ![error](https://cloud.githubusercontent.com/assets/13649199/13672935/ef09ec1e-e6e7-11e5-9f79-d1641c05cbe6.png) Типичные ошибки и подсказки по реализации
+- 1: Для того, чтобы не запускались родительские классы тестов, нужно сделать их `abstract`.
+- 2: В реализациях `JdbcMealRepository` **код не должен дублироваться**. Если вы возвращаете тип `Object`, посмотрите в сторону <a href="https://web.archive.org/web/20201027090144/http://www.quizful.net/post/java-generics-tutorial">дженериков</a>.
+- 3: В `MealServlet/SpringMain` в момент `setActiveProfiles` контекст спринга еще не должен быть инициализирован, иначе выставление профиля уже ни на что не повлияет.
+Уметь пользоваться гугл для разработчика, это умение №1. Если застряли- попробуйте например слова: `spring context set profile`
+- 4: Если у метода нет реализации, то стандартно бросается `UnsupportedOperationException`. Для уменьшения количества кода при реализации _Optional_ (п. 7, только `DataJpa`) попробуйте сделать `default` метод в интерфейсе.
+- 5: В Data-Jpa метод для ссылки на entity (аналог `em.getReference`) - `T getReferenceById(ID id)`  
+- 6: Проверьте, что в `DataJpaMealRepository` все обращения к DB для одной операции выполняются в **одной транзакции**.  
+(`<logger name="org.springframework.orm.jpa" level="debug"/>` для логирования информации по транзакциям)
+- 7: Для 7.1 `достать по id пользователя вместе с его едой` - в `User` добавить `List<Meal> meals`. Учесть, что у юзера может отсутствовать еда. [Ordering a join fetched collection in JPA using JPQL/HQL](http://stackoverflow.com/questions/5903774/ordering-a-join-fetched-collection-in-jpa-using-jpql-hql)
+- 8: Проверьте, что все тесты запускаются из Maven (имена классов тестов удовлетворяют соглашению) и итоги тестов класса выводятся корректно (не копятся). По умолчанию [maven-surefire-plugin](http://maven.apache.org/surefire/maven-surefire-plugin/examples/inclusion-exclusion.html) включает в тесты классы, заканчивающиеся на Test.
+- 9: В тестах можно вынести общие `@ActiveProfiles` наверх, в разных классах они суммируются
+- 10: `<beans profile=` в конфигурации контекста должны находиться **после** всех остальных объявлений.
