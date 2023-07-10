@@ -35,7 +35,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 public class AbstractUserServiceTest {
-    private static final Logger log = getLogger("result");
+    protected static final Logger log = getLogger("result");
 
     private static final StringBuilder results = new StringBuilder();
 
