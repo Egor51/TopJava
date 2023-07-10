@@ -34,7 +34,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
-public class UserServiceTest {
+public class AbstractUserServiceTest {
     private static final Logger log = getLogger("result");
 
     private static final StringBuilder results = new StringBuilder();
