@@ -51,7 +51,7 @@ public class AbstractUserServiceTest {
     };
 
     @Autowired
-    private UserService service;
+    protected UserService service;
 
     @AfterClass
     public static void printResult() {
