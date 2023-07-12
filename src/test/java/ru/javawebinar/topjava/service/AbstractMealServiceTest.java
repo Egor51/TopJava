@@ -2,11 +2,13 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
@@ -25,6 +27,8 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Autowired
     protected MealService service;
 
+    @Autowired(required = false)
+    protected JpaUtil jpaUtil;
     protected static final Logger log = getLogger("result");
     private static final StringBuilder results = new StringBuilder();
 
@@ -120,6 +124,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void createWithException() throws Exception {
+        Assume.assumeTrue("Validation not supported", isJpa());
         validateRootCause(ConstraintViolationException.class, () -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "  ", 300), USER_ID));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new Meal(null, null, "Description", 300), USER_ID));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "Description", 9), USER_ID));
