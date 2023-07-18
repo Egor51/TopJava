@@ -10,5 +10,6 @@
     <title><spring:message code="app.title"/></title>
     <base href="${pageContext.request.contextPath}/"/>
 
-    <link rel="stylesheet" href="resources/css/style.css">
+    <c:url value="/resources/css/style.css" var="mainCssUrl" />`
+    <link rel="stylesheet" href="${mainCssUrl}" />
 </head>
