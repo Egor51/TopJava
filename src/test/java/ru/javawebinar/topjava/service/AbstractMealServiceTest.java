@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
@@ -27,8 +26,6 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Autowired
     protected MealService service;
 
-    @Autowired(required = false)
-    protected JpaUtil jpaUtil;
     protected static final Logger log = getLogger("result");
     private static final StringBuilder results = new StringBuilder();
 

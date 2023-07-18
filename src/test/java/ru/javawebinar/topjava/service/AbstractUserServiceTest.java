@@ -37,6 +37,9 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     public void cleanUp() {
         Objects.requireNonNull(cacheManager.getCache("users")).clear();
         if (isJpa()) {
+            if (jpaUtil == null) {
+                throw new IllegalStateException("JpaUtil is not initialized but required in JPA profile");
+            }
             jpaUtil.clear2ndLevelHibernateCache();
         }
     }
