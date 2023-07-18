@@ -2,17 +2,20 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
     <title>Meals</title>
-    <link rel="stylesheet" href="css/style.css">
+    <c:url value="/resources/css/style.css" var="mainCssUrl" />`
+    <link rel="stylesheet" href="${mainCssUrl}" />
+
 </head>
 <body>
 <section>
-    <h3><a href="${pageContext.request.contextPath}">Home</a></h3>
+    <h3><a href="${pageContext.request.contextPath}"><spring:message code="app.home"></spring:message></a></h3>
     <hr/>
     <h2>Meals</h2>
-    <form method="get" action="meals/filter">
+    <form method="get" action="${pageContext.request.contextPath}/meals/filter">
         <input type="hidden" name="action" value="filter">
         <dl>
             <dt>From Date (inclusive):</dt>
@@ -30,10 +33,10 @@
             <dt>To Time (exclusive):</dt>
             <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
         </dl>
-        <button type="submit">Filter</button>
+        <button type="submit"><spring:message code="common.filter"></spring:message></button>
     </form>
     <hr/>
-    <a href="meals/create">Add Meal</a>
+    <a href="${pageContext.request.contextPath}/meals/create"><spring:message code="common.addMeal"></spring:message></a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -56,8 +59,8 @@
                 </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td><a href="meals/update/${meal.id}">Update</a></td>
-                <td><a href="meals/delete/${meal.id}">Delete</a></td>
+                <td><a href="${pageContext.request.contextPath}/meals/update/${meal.id}"><spring:message code="common.update"></spring:message></a></td>
+                <td><a href="${pageContext.request.contextPath}/meals/delete/${meal.id}"><spring:message code="common.delete"></spring:message></a></td>
             </tr>
         </c:forEach>
     </table>
