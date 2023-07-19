@@ -6,11 +6,13 @@
 <html>
 <head>
     <title>Meals</title>
-    <c:url value="/resources/css/style.css" var="mainCssUrl" />`
+    <c:url value="/resources/css/style.css" var="mainCssUrl" />
     <link rel="stylesheet" href="${mainCssUrl}" />
-
+    <jsp:include page="/WEB-INF/jsp/fragments/headTag.jsp" />
 </head>
 <body>
+<jsp:include page="/WEB-INF/jsp/fragments/bodyHeader.jsp" />
+
 <section>
     <h3><a href="${pageContext.request.contextPath}"><spring:message code="app.home"></spring:message></a></h3>
     <hr/>
@@ -18,19 +20,19 @@
     <form method="get" action="${pageContext.request.contextPath}/meals/filter">
         <input type="hidden" name="action" value="filter">
         <dl>
-            <dt>From Date (inclusive):</dt>
+            <dt><spring:message code="date.from.inclusive"/></dt>
             <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
         </dl>
         <dl>
-            <dt>To Date (inclusive):</dt>
+            <dt><spring:message code="date.to.inclusive"/></dt>
             <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
         </dl>
         <dl>
-            <dt>From Time (inclusive):</dt>
+            <dt><spring:message code="time.from.inclusive"/></dt>
             <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
         </dl>
         <dl>
-            <dt>To Time (exclusive):</dt>
+            <dt><spring:message code="time.to.exclusive"/></dt>
             <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
         </dl>
         <button type="submit"><spring:message code="common.filter"></spring:message></button>
@@ -41,9 +43,9 @@
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Calories</th>
+            <th><spring:message code="meal.date"></spring:message></th>
+            <th><spring:message code="meal.description"></spring:message></th>
+            <th><spring:message code="meal.calories"></spring:message></th>
             <th></th>
             <th></th>
         </tr>
@@ -65,5 +67,6 @@
         </c:forEach>
     </table>
 </section>
+<jsp:include page="/WEB-INF/jsp/fragments/footer.jsp" />
 </body>
 </html>
