@@ -1,9 +1,7 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
+import org.junit.*;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.slf4j.Logger;
@@ -16,8 +14,11 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.validation.ConstraintViolationException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
@@ -29,7 +30,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     protected static final Logger log = getLogger("result");
     @Autowired
     private CacheManager cacheManager;
-
+    @Lazy
     @Autowired(required = false)
     protected JpaUtil jpaUtil;
 
@@ -59,7 +60,6 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
             log.info(result + " ms\n");
         }
     };
-
 
     @AfterClass
     public static void printResult() {
@@ -125,5 +125,14 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     public void getAll() {
         List<User> all = service.getAll();
         USER_MATCHER.assertMatch(all, admin, guest, user);
+    }
+
+    @Test
+    public void createWithException() {
+        Assume.assumeTrue("Validation not supported", isJpa());
+        validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.USER)));
+        validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "  ", "password", Role.USER)));
+        validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 9, true, new Date(), Set.of())));
+        validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 10000, true, new Date(), Set.of())));
     }
 }
