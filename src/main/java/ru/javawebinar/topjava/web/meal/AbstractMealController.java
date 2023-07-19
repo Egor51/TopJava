@@ -10,6 +10,7 @@ import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -18,7 +19,7 @@ import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 public abstract class AbstractMealController {
-    private static final Logger log = LoggerFactory.getLogger(AbstractMealController.class);
+    protected static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     @Autowired
     private MealService service;
 

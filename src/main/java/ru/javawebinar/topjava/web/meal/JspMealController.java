@@ -1,7 +1,5 @@
 package ru.javawebinar.topjava.web.meal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +19,6 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 @Controller
 @RequestMapping(value = "/meals")
 public class JspMealController extends AbstractMealController {
-    private static final Logger log = LoggerFactory.getLogger(JspMealController.class);
 
     @GetMapping
     public String mealList(Model model) {
@@ -54,7 +51,7 @@ public class JspMealController extends AbstractMealController {
     @GetMapping("/create")
     public String createView(Model model) {
         log.info("Executing createView method");
-        model.addAttribute("meal", new Meal(LocalDateTime.now(), " ", 0));
+        model.addAttribute("meal", new Meal(LocalDateTime.now().withSecond(0).withNano(0), " ", 0));
         return "mealForm";
     }
 
