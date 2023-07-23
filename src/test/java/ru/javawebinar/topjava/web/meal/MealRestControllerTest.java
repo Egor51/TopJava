@@ -27,9 +27,6 @@ import static ru.javawebinar.topjava.util.MealsUtil.getTos;
 
 class MealRestControllerTest extends AbstractControllerTest {
 
-    @Autowired
-    MealService service;
-
     private static final String REST_URL = MealRestController.REST_URL + '/';
 
     @Autowired
@@ -70,7 +67,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         Meal created = MEAL_MATCHER.readFromJson(resultActions);
         int id = created.id();
         newMeal.setId(id);
-        MEAL_MATCHER.assertMatch(newMeal, created);
+        MEAL_MATCHER.assertMatch(created, newMeal);
         MEAL_MATCHER.assertMatch(mealService.get(id, USER_ID), newMeal);
     }
 
@@ -85,12 +82,14 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
-        List<MealTo> list = List.of(createTo(meal1, false));
+        List<MealTo> mealTo = List.of(createTo(meal6, true), createTo(meal5, true),
+                createTo(meal2, false), createTo(meal1, false));
+
         perform(MockMvcRequestBuilders.get(REST_URL
-                + "between?startDateTime=2020-01-30T10:00&endDateTime=2020-01-30T13:00"))
+                + "between?startDateTime=2020-01-30T10:00&endDateTime=2020-01-31T20:00"))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(MEAL_TO_MATCHER.contentJson(list));
+                .andExpect(MEAL_TO_MATCHER.contentJson(mealTo));
     }
 }
 
