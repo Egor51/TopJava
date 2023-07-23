@@ -11,7 +11,7 @@ public class MealTo {
 
     private final String description;
 
-    private  final int calories;
+    private final int calories;
 
     private final boolean excess;
 
