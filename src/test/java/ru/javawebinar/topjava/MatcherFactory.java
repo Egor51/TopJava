@@ -11,6 +11,12 @@ import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Factory for creating test matchers.
+ * <p>
+ * Comparing actual and expected objects via AssertJ
+ * Support converting json MvcResult to objects for comparation.
+ */
 public class MatcherFactory {
 
     public static <T> Matcher<T> usingEqualsComparator(Class<T> clazz) {
