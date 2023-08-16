@@ -1,244 +1,480 @@
-Java Enterprise Online Project 
-===============================
-Разработка полнофункционального Spring/JPA Enterprise приложения c авторизацией и правами доступа на основе ролей с использованием наиболее популярных инструментов и технологий Java: Maven, Spring MVC, Security, JPA(Hibernate), REST(Jackson), Bootstrap (css,js), DataTables, jQuery + plugins, Java 8 Stream and Time API и хранением в базах данных Postgresql и HSQLDB.
+# Стажировка <a href="https://github.com/JavaWebinar/topjava">TopJava</a>
 
-![topjava_structure](https://javaops.ru/static/images/projects/top-scheme.jpg)
+## <a href="https://drive.google.com/drive/folders/0B9Ye2auQ_NsFVWRGbEw1RjJrMjg">Материалы занятия</a>
 
-    Когда вы слышите что-то, вы забываете это.
-    Когда вы видите что-то, вы запоминаете это.
-    Но только когда вы начинаете делать это,
-    вы начинаете понимать это
+- **[Запускать браузер с чистым кэшем в режиме ингогнито](https://github.com/JavaOPs/topjava/wiki/IDEA#cache)**
+- **При удалении файлов не забывайте делать clean: `mvn clean package`**
 
-    Старинная китайская поговорка
+## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png) Разбор домашнего задания HW8
 
-## <a href="description.md">Описание и план проекта</a>
-### <a href="http://javaops-demo.ru/topjava" target=_blank>Демо разрабатываемого приложения</a>
-### [Изменения проекта (Release Notes)](ReleaseNotes.md)
-### <a href='https://github.com/JavaOPs/topjava/wiki/Стажировка-"Enterprise-Java-разработчик-(TopJava)"'>Требования к участникам, Wiki</a>
-### <a href="cv.md">Составление резюме, подготовка к интервью, поиск работы</a>
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 1. [HW8 + Optional 2,3](https://drive.google.com/file/d/1ZxmXrhz3K4V-mLkOOrH-JVtl5x0KSpIj)
 
-Обновленное вводное занятие (обязательно смотреть все видео)
-===============
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 1. [Вступление, история, команда, источники](doc/video1.md)
+<details>
+  <summary><b>Краткое содержание</b></summary>
 
-## Обзор наиболее востребованных технологий, которые будут изучаться на курсе TopJava
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2.1. [Часть 1: инфраструктура](doc/video2.1.md)
+#### Перевод таблицы еды на Datatables
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2.2. [Часть 2: frameworks Spring, ORM](doc/video2.2.md)
+- Для удаления и обновления еды мы будем использовать иконки - теперь мы можем удалить `delete` и `update` из файлов локализации.
+- Создавать/редактировать еду будем в модальном окне - удаляем форму `mealForm.jsp`
+- Для полей фильтрации будем использовать форму Bootstrap "Grid System", поэтому css стили для формы фильтра (`dl, dd, dt`) также можем удалить.
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2.3. [Часть 3: тренды](doc/video2.3.md)
+Вместо того, чтобы в `makeEditable` вешать обработчики событий на все элементы страницы с классом `delete`, сделаем обработчик события прямо в JSP: `onclick="deleteRow(${user.id})"`. Функция будет
+вызываться при нажатии на кнопку, и в нее автоматически будет передаваться `id` пользователя или еды.
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2.3. [Часть 4: обзор разрабатываемого приложения](doc/video2.4.md)
+> Возможно, тут мой выбор расходится с распространенным, где положено отделять html от JavaScript. Я опять склоняюсь в сторону KISS.
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 3. [Рекомендуемые подходы к обучению на курсе](doc/video3.md)
+Для таблицы еды, в отличие от таблицы пользователей, требуется обновление с учетом параметров фильтрации (*Optional2*), поэтому мы используем различные стратегии обновления для этих таблиц. Функции
+обновления таблицы инициализируются в контексте `ctx.updateTable` и вызываются в `topjava.common.js`. Из `updateTable` будем вызывать функцию `updateTableByData(data)`, которая обновляет таблицу
+переданными ей данными.  
+В `topjava.users.js` код
 
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 4. [Структура приложения (многоуровневая архитектура)](doc/video4.md)
-### [Демо приложения](http://javaops-demo.ru/topjava)
-
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 5. [Системы управления версиями. Git](doc/video5-vcs-git.md)</a>
-
-##  ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 6. <a href="https://drive.google.com/file/d/0B9Ye2auQ_NsFZDdaaU5fZEo4X3c/view?resourcekey=0-DvpzWIlMHZ7KX_v1SMuiAw">Работа с проектом (выполнять инструкции)</a>
-- **ВНИМАНИЕ: выбирайте для проекта простой пусть без пробелов и русских букв, например, `c:\projects\topjava\` (Windows). Иначе впоследствии будут проблемы**
-- **Плагин Git Intergation уже не требуется, а вкладку `Version control` в IDEA переименовали в `Git`**
-
-Для переключения режима отображения изменений из вкладки `Commit` в `Git: Local Changes` нужно переключить `Settings/Preferences | Version Control | Commit | Use non-modal commit interface` или в контекстном меню вкладки `Commit`:
-
-![image](https://user-images.githubusercontent.com/13649199/105491518-72d8f300-5cc7-11eb-8b79-c46382562deb.png)  ![image](https://user-images.githubusercontent.com/13649199/105488663-05c35e80-5cc3-11eb-962e-30f403d623e8.png)
-
-### Патч [prepare_to_HW0.patch](https://drive.google.com/file/d/1LNPpu9OkuCpfpD8ZJHO-o0vwu49p2i5M) (скачать и положить в каталог вашего проекта)
-
-> Проект постоянно улучшается, поэтому видео иногда отличается от кода проекта. Изменения указываю после видео: 
-> - переименовал класс `UserMealWithExceed` и его поле `exceed` в `UserMealWithExcess.excess`
-> - в `UserMeals/UserMealWithExcess` поля изменились на `private`
-> - обновил данные `UserMealsUtil.meals` и переименовал некоторые переменные, поля и методы
-> - добавил `UserMealWithExcess.toString()` и метод для выполнения _Optional домашнего задания_
-> - метод фильтрации в `TimeUtil` переименовал в `isBetweenHalfOpen` (также изменилась логика сравнения: `startTime` включается в интервал, а `endTime` - не включается) 
-
-### GitHub поменял политику: теперь пушить нужно через токен. IDEA предложит его сгенерировать при пуше, или можно [создать токен в настройках](https://www.jetbrains.com/help/idea/github.html#register-account)
-- [Способы авторизации в GitHub](https://topjava.ru/blog/vvedeniye-v-git-github-ustanovka-i-nastroyka#6)
- 
-##  Инструкция по шагам (из видео):</h3>
--  <a href="http://javaops.ru/view/soft">Установить ПО (Git, JDK8, IntelliJ IDEA, Maven)</a>
--  Создать аккаунт на <a href="https://github.com">GitHub</a>
--  Сделать Fork **ЭТОГО** проекта (https://github.com/JavaOPs/topjava) </a>
--  Сделать локальный репозиторий проекта:
-            <pre>git clone https://github.com/[Ваш аккаунт]/topjava.git</pre>
-
-> Вместо Fork можно сделать [клонирование проекта](https://github.com/JavaOPs/topjava/wiki/Git#user-content-Клонирование-проекта): он не будет привязан к исходному https://github.com/JavaOPs/topjava и у него не будет истории.
-
-- Открыть и настроить проект в IDEA
-   - <a href="http://stackoverflow.com/questions/29695918/intellij-idea-console-issue#33035499">Выставить кодировку UTF-8 в консоли</a>
-   - <a href="https://github.com/JavaOPs/topjava/wiki/IDEA#%D0%9F%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-%D0%BA%D0%BE%D0%B4%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D1%83-utf-8">Поставить кодировку UTF-8</a>
-   - Опционально: <a href="https://github.com/JavaOPs/topjava/wiki/IDEA#%D0%9F%D0%BE%D0%BC%D0%B5%D0%BD%D1%8F%D1%82%D1%8C-%D1%84%D0%BE%D0%BD%D1%82-%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E-dejavu">поменять шрифт по умолчанию на DejaVu</a> или на **новый [JetBrains Mono](https://habr.com/ru/company/jugru/news/t/484134/)**
--  По ходу видео сделать `Apply Patch...` скачанного патча `Prepare_to_HW0.patch`
--  Закоммитить и запушить изменения (`commit` + `push`)
--  Сделать ветку домашнего задания
--  Выполнить задание и залить на GitHub (`commit` + `push`)
--  Переключиться в основную ветку проекта `master`.
-
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 7. [Maven](https://drive.google.com/file/d/1qEJTwv9FNUQjx-y9MSydH01xaAne0-hu)
-- [Руководство по Maven](https://topjava.ru/blog/apache-maven-osnovy-1)
-- Wiki: [Apache Maven](https://ru.wikipedia.org/wiki/Apache_Maven)
-- [The Central Repository](http://search.maven.org)
-- Дополнительно:
-    - [Мой Wiki по Maven](https://github.com/JavaOPs/topjava/wiki/Maven)
-    - [Основы Maven](https://www.youtube.com/watch?v=0uwMKktzixU)
-    - JavaRush: [Основы Maven](https://javarush.ru/groups/posts/2523-chastjh-4osnovih-maven)
-    - Инструмент сборки проектов [Maven](https://www.examclouds.com/ru/java/java-core-russian/lesson20)
-    - [Maven Getting Started Guide](https://maven.apache.org/guides/getting-started/index.html)
-    - [Видео: Maven vs Gradle vs SBT (Архипов, Борисов, Садогурский)](https://www.youtube.com/watch?v=21qdRgFsTy0)
-    - [Build Lifecycle](http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html)
-    - [Dependency Mechanism](http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html)
-
-## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 8. [Как правильно относиться к техзаданию (ТЗ). Полуоткрытый интервал.](https://drive.google.com/file/d/1BpTzjNFjS0TSekCyt_xvt6YoLvuw5KTZ)
-- [Типы промежутков](https://ru.wikipedia.org/wiki/Промежуток_(математика))
-
-## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png) Домашнее задание HW0
-
-### ВНИМАНИЕ: НЕ НАДО в репозиторий делать Pull Request со своими решениями! См. видео выше ("Работа с проектом")
-
-Реализовать метод `UserMealsUtil.filteredByCycles` через циклы (`forEach`):
--  должны возвращаться только записи между `startTime` и `endTime`
--  поле `UserMealWithExcess.excess` должно показывать, превышает ли сумма калорий за весь день значение `caloriesPerDay`
-        
-Т. е. `UserMealWithExcess` - это запись одной еды, но поле `excess` будет одинаково для всех записей за этот день.
-    
-> - Проверьте результат выполнения ДЗ (можно проверить логику в [http://javaops-demo.ru/topjava](http://javaops-demo.ru/topjava), список еды)
-> - Оцените Time complexity алгоритма. Если она больше O(N), например O(N*N) или N*log(N), сделайте O(N).  
-> **Внимание: внимательно прочитайте про O(N). O - это любой коэффициент, 2*N это тоже O(N).**
-
--  <a href="http://www.mscharhag.com/2014/02/java-8-datetime-api.html">Java 8 Date and Time API</a>
--  <a href="http://web.archive.org/web/20201128101944/https://tproger.ru/translations/algorithms-and-data-structures/">Алгоритмы и структуры данных для начинающих: сложность алгоритмов</a>
--  [Сложность алгоритмов и Big O Notation](https://threadreaderapp.com/thread/1470666237286010881)
--  [Головач: сложность алгоритмов в теме коллекций](https://www.youtube.com/watch?v=Ek9ijOiplNE&feature=youtu.be&t=778)
--  <a href="https://drive.google.com/file/d/0B9Ye2auQ_NsFNEJWRFJkVDA3TkU/view?usp=sharing&resourcekey=0-MPCuoLVdSLiSc7hlE2jefQ">Time complexity</a>
--  <a href="https://ru.wikipedia.org/wiki/Временная_сложность_алгоритма">Временная сложность алгоритма</a>
--  <a href="https://ru.wikipedia.org/wiki/Вычислительная_сложность">Вычислительная сложность</a>
-
-#### ВНИМАНИЕ: варианты Optional делайте в одной ветке в разных методах `UserMealsUtil`. Проще делать, проще проверять
-
-### Optional (Java 8 Stream API)
 ```
-Реализовать метод `UserMealsUtil.filteredByStreams` через Java 8 Stream API.
+    updateTable: function () {
+        $.get(userAjaxUrl, updateTableByData);
+    }
 ```
--  <a href="http://www.youtube.com/watch?v=_PDIVhEs6TM">Видео: Доступно о Java 8 Lambda</a>
--  <a href="https://devcolibri.com/java-8-killer-features-%D1%87%D0%B0%D1%81%D1%82%D1%8C-1/">Java 8: Lambda выражения</a>
--  <a href="https://devcolibri.com/java-8-killer-features-%D1%87%D0%B0%D1%81%D1%82%D1%8C-2/">Java 8: Потоки</a>
--  <a href="https://javadevblog.com/polnoe-rukovodstvo-po-java-8-stream.html">Pуководство по Java 8 Stream</a>
--  [Полное руководство по Java 8 Stream API в картинках и примерах](https://annimon.com/article/2778)    
--  [7 способов использовать groupingBy в Stream API](https://habrahabr.ru/post/348536)
--  <a href="http://habrahabr.ru/post/224593/">Лямбда-выражения в Java 8</a>
--  <a href="https://github.com/winterbe/java8-tutorial">A Guide to Java 8</a>
--  <a href="http://habrahabr.ru/company/luxoft/blog/270383/">Шпаргалка Java Stream API</a>
--  <a href="https://www.youtube.com/watch?v=hEyCK4ueBlc">Алексей Владыкин: Элементы функционального программирования в Java</a>
--  <a href="https://www.youtube.com/watch?v=iD8H7cmxw_w">Yakov Fain о новом в Java 8</a>
--  <a href="http://stackoverflow.com/questions/28319064/java-8-best-way-to-transform-a-list-map-or-foreach">stream.map vs forEach</a
--  [Руководство по Java Stream в Java 8](https://javarush.com.ua/groups/posts/3974-kofe-breyk-177-podrobnoe-rukovodstvo-po-java-stream-v-java-8)
--  Дополнительно
-   - [Сергей Куксенко — Stream API, часть 1](https://www.youtube.com/watch?v=O8oN4KSZEXE)
-   - [Сергей Куксенко — Stream API, часть 2](https://www.youtube.com/watch?v=i0Jr2l3jrDA)
 
-### Optional 2 (+5 бонусов, только после выполнения базового и Optional задания!)
-- циклом за 1 проход по `List<UserMeal>`
-    - без циклов по другим коллекциям/массивам (к ним также относим методы коллекций `addAll()/removeAll()`)
-- через Stream API за 1 проход по исходному списку `meals.stream()`
-    - нельзя использовать внешние коллекции, не являющиеся частью коллектора
-  - возможно дополнительные проходы по частям списка, при этом превышение должно считаться один раз для всего подсписка. Те например нельзя разбить список на на 2 подсписка с четными и нечетными датами и затем их объединить, с подсчетом превышения для каждого элемента.
+через jQuery делает AJAX GET запрос и полученные данные автоматически передает в `updateTableByData`. Для еды (в`topjava.meals.js`) `updateTable` по `id=filter` получает форму фильтрации, с помощью jQuery `serialize()`
+сериализует ее поля и отправляет запросом GET в `MealUIController#getBetween`. Отфильтрованную еду в коллбэке `done` передаем в `updateTableByData`. Функцию `ctx.updateTable()` вешаем на `onclick`
+кнопки фильтрации в `meals.jsp`. И она же будет вызываться из `topjava.common.js` при любом обновлении таблицы.
 
-Временная сложность реализации должна быть O(N) (обратите внимание на п. 13 замечаний)  
-Решение должно быть рабочим в общем случае (должно работать в приложении с многими пользователями, не только при запуске `main`)  
-Нельзя 2 раза проходить по исходному списку (в том числе по его отфильтрованной или преобразованной копии)
+Вместо `MealJspController` используем `MealUiController`, он маппится по URL `/profile/meals`, так как еда принадлежит конкретному пользователю (находится в его профиле).
 
-Ресурсы:
-- [Baeldung: Custom Collectors](https://www.baeldung.com/java-8-collectors#Custom)
-- [Руководство по Java 8 Stream API: Collector](https://annimon.com/article/2778#collector)
-- [Хватит писать циклы! Топ-10 лучших методов для работы с коллекциями из Java 8](https://javarush.ru/groups/posts/524-khvatit-pisatjh-ciklih-top-10-luchshikh-metodov-dlja-rabotih-s-kollekcijami-iz-java8)
-- [Понять Java Stream API](https://vc.ru/u/604567-yerlan-akzhanov/194409-ponyat-java-stream-api)
+> **Внимание! Не делайте в выпускном проекте путь `/profile/...` к ресурсам, которые НЕ принадлежат пользователю.**
 
-### Замечания по использованию Stream API:
-- Когда встречаешь что-то непривычное, приходится перестраивать мозги. Например, переход с процедурного на ООП-программирование дается непросто. Те, кто не знает шаблонов (и не хотят учить), также их встречают плохо. Хорошая новость в том, что если это принять и начать использовать, то начинаешь получать от этого удовольствие. И тут главное не впасть в другую крайность:
-  - [Используйте Stream API проще (или не используйте вообще)](https://habrahabr.ru/post/337350/)
-- Если вас беспокоит производительность стримов, обязательно прочитайте про оптимизацию 
-    - ["Что? Где? Когда?"](http://optimization.guide/intro.html)
-    - [Перформанс: что в имени тебе моём?](https://habrahabr.ru/company/jugru/blog/338732/)
-    - [Performance это праздник](https://habrahabr.ru/post/326242/)
-    
-При использовании Stream API производительность улучшится только на больших задачах, где возможно распараллеливание.
-Еще: просто так запустить и померить скорость JVM нельзя (как минимум надо дать прогреться и запустить очень большое число раз). Лучше использовать какие-нибудь бенчмарки, например [JMH](http://tutorials.jenkov.com/java-performance/jmh.html), который мы используем на другом проекте (Mastejava).
-  
-## ![error](https://cloud.githubusercontent.com/assets/13649199/13672935/ef09ec1e-e6e7-11e5-9f79-d1641c05cbe6.png) Замечания к HW0
-- 1: Код проекта менять можно! Одна из распространенных ошибок как в тестовых заданиях на собеседовании, так и при работе на проекте, что ничего нельзя менять. Конечно, при правках в рабочем проекте обязательно нужно проконсультироваться/проревьюироваться у авторов кода (находятся по истории VCS)
-- 2: Наследовать `UserMealWithExcess` от `UserMeal` нельзя, т. к. это разные сущности: Transfer Object и Entity. Мы будем их проходить на 2-м уроке. Это относится и к их зависимости друг от друга.
-- 3: Правильная реализация должна быть простой и красивой, можно сделать 2-мя способами: через стримы и через циклы. Сложность должна быть O(N), т. е. без вложенных стримов и циклов.
-- 4: При реализации через циклы посмотрите в `Map` на методы `getOrDefault` или `merge`
-- 5: **При реализации через `Stream` заменяйте `forEach` оператором `stream.map(..)`**
-- 6: Объявляйте переменные непосредственно перед использованием (если возможно - сразу с инициализацией). При объявлении коллекций в качестве типа переменной используйте интерфейс (Map, List, ..)
-- 7: Если IDEA предлагает оптимизацию (желтым подчеркивает), например, заменить лямбду на ссылку на метод (method reference), соглашайтесь (Alt+Enter)
-- 8: Пользуйтесь форматированием кода в IDEA: `Alt+Ctrl+L`
-- 9: Перед check-in (отправкой изменений на GitHub) просматривайте внесенные изменения (Git -> [Log](https://www.jetbrains.com/help/idea/log-tab.html) -> курсор на файл и Ctrl+D): не оставляйте в коде ничего лишнего (закомментированный код, TODO и пр.). Если файл не меняется (например только пробелы или переводы строк), не надо его чекинить, делайте ему `revert` (Git -> Revert / `Ctrl+Alt+Z`).
-- 10: `System.out.println` нельзя использовать нигде, кроме как в `main`. Позже введем логирование.
-- 11: Результаты, возвращаемые `UserMealsUtil.filteredByStreams`, мы будем использовать [в нашем приложении](http://javaops-demo.ru/topjava) для фильтрации по времени и отображения еды правильным цветом.
-- 12: Обращайте внимание на комментарии к вашим коммитам в Git. Они должны быть короткие и информативные (лучше на english)
-- 13: Не полагайтесь в решении на то, что список еды будет подаваться отсортированным. Такого условия нет.
------
+`MealUiController` будет реализован так же, как и `MealRestController`, за некоторыми исключениями:
 
->  - ДЗ первого урока будет связано с созданием небольшого [CRUD](https://ru.wikipedia.org/wiki/CRUD)-приложения (в памяти, без базы данных) на JSP и сервлетах
->  - основы JavaScript необходимы для понимания проекта, начиная с 8-го занятия
+- для создания или обновления еды будет использоваться метод `#createOrUpdate`, который принимает информацию о еде в параметрах запроса `@RequestParameter`, приходящих из формы
+- авторизации у этих контроллеров будут отличаться (будет ниже в этом занятии)
 
-### Полезные ресурсы
-#### HTML, JavaScript, CSS 
-- [Basic HTML and HTML5](https://learn.freecodecamp.org/responsive-web-design/basic-html-and-html5/say-hello-to-html-elements/)
-- [Справочник по WEB](https://developer.mozilla.org/ru/)
-- [Видео по WEB-технологиям](https://www.youtube.com/user/WebMagistersRu/playlists)
-- [Изучение JavaScript в одном видеоуроке за час](https://www.youtube.com/watch?v=QBWWplFkdzw)
-- <a href="http://www.w3schools.com/default.asp">HTML, CSS, JAVASCRIPT, SQL, JQUERY, BOOTSTRAP</a>
-- <a href="https://www.youtube.com/watch?v=j0ycGQKqMT4">Введение в программирование на JavaScript</a>
-- <a href="http://anton.shevchuk.name/javascript/html-css-javascript-standarts/">Стандарты кодирования для HTML, CSS и JavaScript’a</a>
-- <a href="http://www.intuit.ru/studies/courses/1102/134/info">Основы работы с HTML/CSS/JavaScript</a>
-- <a href="http://itchief.ru/lessons/javascript/94-javascript-introduction">JavaScript - Основы</a>
-- <a href="http://learn.javascript.ru/first-steps">Основы JavaScript</a>
-- <a href="http://itchief.ru/lessons/bootstrap-3/19-introduction-to-twitter-bootstrap-3">Bootstrap 3 - Основы</a>
-- <a href="http://anton.shevchuk.name/jquery/">jQuery для начинающих</a>
+`meals.jsp` изменяем по аналогии с `users.jsp`. Отличие этих страниц - для еды будет использоваться форма фильтрации таблицы, которую создадим с помощью Bootstrap Grid System
 
-#### Java (базовые вещи)
-- [Сборник видео "Изучаем Java"](https://www.youtube.com/playlist?list=PLyxk-1FCKqockmP-fXZmHQ7UlYP3qvZRa)
-- <a href="https://github.com/JavaOPs/masterjava#Первое-занятие-многопоточность">1-й урок MasterJava: Многопоточность</a>
-- [Основы Java garbage collection](http://web.archive.org/web/20180831013112/https://ggenikus.github.io/blog/2014/05/04/gc)
-- <a href="https://habrahabr.ru/post/134102/">Размер Java объектов</a>
-- <a href="http://www.quizful.net/post/java-reflection-api">Введение в Java Reflection API</a>
-- <a href="https://habrahabr.ru/users/tarzan82/topics/">Структуры данных в картинках</a>
-- <a href="https://habrahabr.ru/company/luxoft/blog/157273/">Обзор java.util.concurrent.*</a>
-- <a href="http://web.archive.org/web/20200808064416/http://www.skipy.ru/technics/synchronization.html">Синхронизация потоков</a>
-- <a href="http://java67.blogspot.ru/2014/08/difference-between-string-literal-and-new-String-object-Java.html">String literal pool</a>
-- <a href="https://habrahabr.ru/post/132241/">Маленькие хитрости Java</a>
--  <a href="https://github.com/winterbe/java8-tutorial">A Guide to Java 8</a>
+> [Bootstrap Grid System](https://getbootstrap.com/docs/4.6/layout/grid/) - экран разбивается на 12 колонок, и для каждого элемента страницы мы можем задать, сколько колонок он может занимать. Колонки можно настраивать (отступы и т.д.)
 
-### Туториалы, разное
-- [Открытый курс: Spring Boot + HATEOAS](https://javaops.ru/view/bootjava)
-- [Что нужно знать о бэкенде новичку в веб-разработке](https://tproger.ru/translations/backend-web-development)
-- [Туториалы: Spring Framework, Hibernate, Java Core, JDBC](http://proselyte.net/tutorials/)
+По 3 колонки на `startDate` и `endDate` (`col-3`), затем будет 2 колонки отступа (`offset-2`), и далее по 2 колонки на `startTime` и `endTime` (`col-2`).
 
-#### Сервлеты
--  <a href="https://devcolibri.com/как-создать-servlet-полное-руководство/">Как создать Servlet? Полное руководство.</a>
--  [Сервлеты](https://metanit.com/java/javaee/4.1.php)
+### Кнопка сброса фильтра
 
-#### JDBC, SQL
--  <a href="https://habrahabr.ru/post/123636/">Основы SQL на примере задачи</a>
--  <a href="https://www.youtube.com/playlist?list=PLIU76b8Cjem5qdMQLXiIwGLTLyUHkTqi2">Уроки по JDBC</a>
--  <a href="https://www.codecademy.com/learn/learn-sql">Learn SQL</a>
--  <a href="http://www.intuit.ru/studies/courses/5/5/info">Интуит. Основы SQL</a>
--  <a href="http://campus.codeschool.com/courses/try-sql/contents">Try SQL</a>
--  <a href="https://stepic.org/course/Введение-в-базы-данных-551">Курс "Введение в базы данных"</a>
+В форму фильтрации добавим кнопку очистки формы. При нажатии на нее будет вызываться функция `clearFilter()`.  
+В `$('#filter')[0].reset()` берем массив всех элементов с указанным `id=filter` (нам вернется массив из одного элемента - нашей формы) и сбрасываем все поля формы через `reset()`. После этого обновляем
+таблицу еды без учета фильтрации.
 
-#### Разное
--  <a href="http://javaops.ru/view/test">Вопросы по собеседованию, ресурсы для подготовки</a>
--  <a href="http://jeeconf.com/materials/intellij-idea/">Эффективная работа с кодом в IntelliJ IDEA</a>
--  <a href="http://www.quizful.net/test">Quizful- тесты онлайн</a>
--  <a href="https://stepic.org/course/Введение-в-Linux-73">Введение в Linux</a>
+</details>
 
-#### Книги
--  <a href="http://www.ozon.ru/context/detail/id/24828676/">Джошуа Блох: Java. Эффективное программирование. Второе издание</a>
--  <a href="http://www.labirint.ru/books/87603/">Гамма, Хелм, Джонсон: Приемы объектно-ориентированного проектирования. Паттерны проектирования</a>
--  <a href="http://www.bookvoed.ru/book?id=639284">Редмонд Э.: Семь баз данных за семь недель. Введение в современные базы данных и идеологию NoSQL</a>
--  <a href="http://www.ozon.ru/context/detail/id/3174887/">Brian Goetz: Java Concurrency in Practice</a>
--  <a href="http://bookvoed.ru/book?id=2593572">G.L. McDowell: Cracking the Coding Interview</a>
+#### Apply 9_01_HW8.patch
+
+- [Grid system](https://getbootstrap.com/docs/4.1/layout/grid/)
+- [Difference among col-* in Bootstrap](https://stackoverflow.com/a/19865627/548473)
+- [Bootstrap forms](https://getbootstrap.com/docs/4.1/components/forms/)
+
+#### ![question](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Вопрос:
+
+> Можно ли было удаление делать без перезагрузки таблицы (удалением строки) и для редактирования брать данные со страницы, а не с сервера?
+
+В многопользовательском приложении принято при изменении данных подтягивать все изменения из базы, иначе может быть несогласованность базы и UI (например, когда пользователей редактируют несколько
+администраторов одновременно). Для еды доставать из базы данные при редактировании нет необходимости, но лучше делать все универсально. В таблице часто представлены не все данные, которые можно
+редактировать. Дополнительная нагрузка на базу тут совсем небольшая. Для еды нам при каждом добавлении-удалении-редактировании еще необходимо пересчитывать превышение `excess`.
+
+#### Apply 9_02_HW8_clear_filter.patch
+
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2. [HW8 Optional: enable/disable](https://drive.google.com/file/d/1-2ekRtwd60Cbqq4LPEQ_MOsqWcR7d04a)
+
+<details>
+  <summary><b>Краткое содержание</b></summary>
+
+Сделаем в `UserService` метод `enable`, который принимает `boolean` (вкл./выкл. пользователя). В методе загружаем из базы нужного пользователя, устанавливаем ему значение `enabled` и записываем
+обновленного пользователя обратно в базу. `repository.save(user)` нужен только для JDBC-реализации, в JPA изменения сущностей в `@Transactional` методах попадают в базу автоматически. Метод помечен
+аннотацией `@Transactional`, чтобы все действия в методе выполнялись в одной транзакции.
+
+> Внимание! Не забываем в выпускных проектах ставить `@Transactional` над методами сервиса, где есть несколько обращений к базе.
+
+Теперь можно вызвать этот метод из контроллеров. В отличие от UI, в REST-контроллере используем `@PatchMapping` - сущность изменяется не полностью, а частично.
+
+На странице `users.jsp` для строки таблицы пользователей добавляем атрибут `data-user-enabled`. Для случая, когда этот атрибут будет `false`, в css добавим еще один стиль - теперь строки для неактивных
+пользователей будут становиться полупрозрачными.  
+На событие `onclick` на чекбокс вешаем функцию `enable($(this), ${user.id})`. В эту функцию передается элемент `this` (чекбокс) и `id` пользователя. В функции получаем галочку флага `:checked`, и
+передаем ее в POST-запросе в контроллер. После успешного выполнения запроса меняем для текущей строки таблицы атрибут `data-user-enabled`, чтобы изменился стиль ее отображения? и выводим уведомление.
+
+> Добавил коллбэк `fail` - если обновить базу не удалось, возвращаем флаг в прежнее положение.
+
+### Тесты для REST-контроллера и сервиса
+
+Создадим тест `AbstractUserServiceTest#enable`: в нем сначала деактивируем пользователя, потом получаем его из базы и проверяем, что он действительно не активен. Затем активируем этого же пользователя и
+снова проверяем - теперь он должен быть активным.
+
+В тесте `AdminRestControllerTest#enable` делаем PATCH-запрос деактивации, проверяем статус ответа и отсутствие контента. После чего получаем этого пользователя из базы и проверяем, что он
+действительно деактивирован.
+
+</details>
+
+#### Apply 9_03_HW8_enable_disable.patch
+
+>  В тестах сервисов `AbstractServiceTest` базу восстанавливаем после теста (при старте приложения она популируется, если последний тест в сервисах ее меняет, тесты контроллеров могут не пройти)
+
+Примечание: [в публичном API выполнять PATCH с параметрами нельзя](https://stackoverflow.com/questions/64390768/can-i-use-query-parameters-with-http-patch-method). But in a situation where your API is
+only used by front ends that you control (for example, only called via your java script client downloaded from your web servers), and if you don't need to use any intermediate components (like a web
+cache) in the middle, then you might get away with it (данные у нас не кешируются).
+
+## Занятие 9:
+
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 3.  <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFYlRkc2NGRGVydk0">Spring Binding</a>
+
+<details>
+  <summary><b>Краткое содержание</b></summary>
+
+Spring Data Binding - функциональность Spring преобразовывать данные в параметрах или теле запроса в экземпляры класса. Формат данных может быть как `application/x-www-form-urlencoded` (из html-формы), так и
+JSON.  
+Для удобства обмена данными между frontend и сервером применяется объект (и паттерн) Transfer Objects. Объект TO содержит только те поля, которые нужны UI, и в процессе работы приложения происходит
+конвертация entity в TO и обратно.  
+Создадим объект `UserTo` только с теми полями, которые может редактировать администратор и пользователь
+(ввод ролей админом у нас не будет реализован, по окончании стажировки можете доработать наше приложение самостоятельно). В `AdminUIController#create` вместо набора параметров будем принимать `UserTo`
+
+- Spring автоматически извлечет из запроса нужные данные и, используя отражение, сделает из них объект. Для этого **объект должен иметь конструктор без параметров и сеттеры**.
+
+</details>
+
+#### Apply 9_04_binding.patch
+
+> Перенес `ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY` в `ru.javawebinar.topjava.util.UsersUtil`
+
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 4.  <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFd2ZvcS1pSjdMQlU">Реализация update</a>
+
+<details>
+  <summary><b>Краткое содержание</b></summary>
+
+Записи в таблице будут обновляться с помощью js-функции `updateRow`. В этой функции:
+
+- Запрашиваем у сервера данные о редактируемой сущности (на случай, если к этому моменту данные уже были кем-то изменены).
+- Функцией `.each` проходимся по всем полям принятых данных JSON, ищем в форме модального окна (`form = $('#detailsForm')`) соответствующие элементы `input`:
+  `form.find("input[name='" + key + "']")`
+- Присваиваем полям значения `.val(value)`. Таким образом мы заполняем форму актуальными данными пользователя.
+- Открываем модальное окно с нашей формой
+
+Переименовываем `AdminUIController#create` в `createOrUpdate`. Если в пришедшем объекте `id = null`, в базе создается новая сущность, иначе обновляем существующую с пришедшим `id`.  
+Дополнительно создаем `UserUtil#updateFromTo`, который обновляет сущность данными TO.
+
+В `topjava.common.js` в функции `save` после обновления или добавления пользователя в базу в коллбэке `done` повторно запрашиваем с сервера список всех пользователей и обновляем таблицу.
+
+</details>
+
+#### Apply 9_05_update.patch
+
+> - Сделал интерфейс `HasId` от которого наследуются `BaseTo` и `AbstractBaseEntity`
+> - Сделал проверку `id` в `ValidationUtil` на основе `HasId`
+> - Сделал в `ProfileRestController` обновление своего профиля через `UserTo` (нельзя изменять себе роли) и поправил тест
+
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 5.  <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFLXp5MTFDMEY5WFE">Spring Validation</a>
+
+<details>
+  <summary><b>Краткое содержание</b></summary>
+
+Проверка на корректность данных задается с помощью аннотаций валидации над полями объекта. Для большинства таких аннотаций в скобках можно указать дополнительные параметры, по которым будет
+осуществляться проверка. Также можно переопределить стандартное уведомление, которое будет сообщать о неверных данных. Эти аннотации нельзя использовать непосредственно при вводе данных, так как формы
+ввода данных находится на стороне клиента, а проверка происходит на сервере.  
+В `AdminUIController#createOrUpdate` перед `UserTo` укажем аннотацию `@Valid` (запустить функционал валидации) и добавим параметр `BindingResult` - результат валидации. Если в результате есть ошибки,
+склеим их в строку и отдадим клиенту со статусом `UNPROCESSABLE_ENTITY`. На стороне клиента в `failedNote` будет выведено сообщение об ошибке (обработчик всех ошибок по AJAX задаем
+в `$(document).ajaxError`), к тексту уведомления добавим ответ сервера.
+
+</details>
+
+#### Apply 9_06_validation.patch
+
+> - `responseJSON` не выводится в случае его отсутствия (например при попытке добавить пользователя с дублирующимся email)
+
+- <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#validation-beanvalidation">Spring Validation.</a>
+- <a href="http://beanvalidation.org/">Bean Validation</a>
+- <a href="https://spring.io/blog/2012/08/29/integrating-spring-mvc-with-jquery-for-validation-rules">Валидация формы по AJAX.</a>
+- <a href="http://stackoverflow.com/questions/14730329/jpa-2-0-exception-to-use-javax-validation-package-in-jpa-2-0#answer-17142416">JSR-303, 349</a>
+- <a href="https://dzone.com/articles/spring-31-valid-requestbody">@Valid @RequestBody + Error handling</a>
+- [Java Bean Validation Basics](https://www.baeldung.com/javax-validation)
+
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 6.  <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFcW1qeTVFdS1BdHM">Перевод DataTables на Ajax</a>
+
+<details>
+  <summary><b>Краткое содержание</b></summary>
+
+В `DataTables` есть параметр конфигурации `ajax.url`. Если он присутствует, по этому URL выполнится AJAX-запрос, и таблица будет инициализирована полученными данными.
+
+- При этом в JSP больше не требуются данные для таблицы (модели в контроллерах)
+- Отрисовывать таблицу в JSP тоже больше не нужно, она строится автоматически, используя конфигурацию `DataTables`.
+- В конфигурацию `DataTables` добавляем  `ajax.url` - url, по которому запрашиваются данные
+- В `columns` добавляем метод `render` - функция отображения содержимого ячейки таблицы. Так как с сервера дата `registered` приходит в формате ISO, при отображении содержимого ячейки нужно
+  предварительно произвести ее конвертацию.
+- Функции отрисовки кнопок удаления `renderDeleteBtn` и редактирования `renderEditBtn` будут общими для страниц пользователей и еды.
+- В конфигурации `DataTables` можно настроить функцию отображения всей строки `createdRow`. Если пользователь в этой строке неактивен, задаем ей соответствующий css стиль.
+
+</details>
+
+#### Apply 9_07_datatable_via_ajax.patch
+
+> - Перешли на [параметры Datatables в формате 1.10](https://datatables.net/upgrade/1.10-convert)
+> - В `makeEditable()` больше нет манипуляций c DOM, которые требуются делать ПОСЛЕ отработки плагина `datatables`, поэтому нам не обязательно вызывать ее в коллбэке `initComplete`. Отображения строки меняем в параметре конфигурации `createdRow`
+
+- [DataTables Ajax](https://datatables.net/manual/ajax)
+
+#### ![question](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Вопрос:
+
+> Что за дополнительный параметр (который каждый раз инкрементируется) появляется при запросе datatables данных по ajax (например `http://localhost:8080/topjava/ajax/admin/users/?_=1496156621129`) ?
+
+Это защита `datatables` от кэширования запроса браузером. При изменении js, css и других статических ресурсов также полезно добавлять в запрос версию, чтобы данные не брались из кэша (особенно когда
+приложение уже вышло в продакшен).
+
+#### Apply 9_08_js_i18n.patch
+
+> - Добавил [простую интернационализацию в JavaScript](https://stackoverflow.com/questions/6218970/resolving-springmessages-in-javascript-for-i18n-internationalization).
+
+- на стороне сервера формируется `i18n` - объект JavaScript, который затем используется для интернационализации в браузере
+
+> - в модальном окне заголовок подменяется через `$('#modalTitle').html(..title)`
+
+> Для тестирования локали
+> - [можно поменять `Accept-Language`](https://stackoverflow.com/questions/7769061/how-to-add-custom-accept-languages-to-chrome-for-pseudolocalization-testing). Для Хрома в `chrome://settings/languages` перетащить нужную локаль наверх.
+> - можно поставить [Locale Switcher](https://chrome.google.com/webstore/detail/locale-switcher/kngfjpghaokedippaapkfihdlmmlafcc) хром плагин
+
+- <a href="http://stackoverflow.com/a/6242840/548473">JavaScript internationalization</a>
+
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 7.  <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFUmhUTms1WnhTeHc">Форма логина / логаут.</a>
+
+<details>
+  <summary><b>Краткое содержание</b></summary>
+
+Добавляем в `spring-security.xml` еще одну security-конфигурацию `<http>`. URL `/admin/**` будет доступен только с ролью `ADMIN`, все остальные URL будут доступны только аутентифицированным
+пользователям. В конфигурации указываем, что аутентификация будет проходить через стандартные формы Spring для login и logout.  
+`RootControllerTest` перестал работать - Spring Security при каждом запросе к контроллеру будет делать перенаправление на страницу `login` - вместо ожидаемого в тестах статуса ответа HTTP.200 с
+сервера будет возвращаться ответ со статусом HTTP.302 - redirect. Исправим тесты, указав ожидаемый `forwardedUrl`.
+
+#### Своя страница login
+
+Страница логина должна быть доступна для любого не аутентифицированного пользователя. Для этого в `spring-security.xml` добавляем путь `"/login"` с доступом для всех: `permitAll`.  
+И настраиваем `form-login`:
+
+- указываем ссылку на страницу логина;
+- стандартные страницы, на которые будет осуществляться переход после успешного или неуспешного логина
+- `login-processing-url` - это путь, по которому Spring будет обрабатывать запросы на сервер от формы логина.
+
+Создадим собственную страницу логина по Bootstrap-шаблону - `login.jsp`. На ней расположена форма логина, в `action` которой указываем `login-processing-url` - путь к обработке Spring Security POST-запроса.  
+На странице сделаем элемент для отображения информации об ошибке в случае неправильных аутентификационных данных. Spring Security кладет в HTTP-сессию сообщение об ошибке, и при неуспешном
+логине (`authentication-failure-url="/login?error=true"`) оно отображается на странице.  
+В `RootController#root` перенаправим запросы пользователей к "руту" ("/") на страницу еды: `redirect:meals`. Чтобы такие запросы обрабатывались корректно и при обращении к корню происходил редирект,
+нужно удалить или переименовать `index.html/index.jsp`.  
+И еще добавим пример обработки статических ресурсов - `test.html`. Чтобы обратиться к нему из браузера, в `spring-mvc.xml` добавим `<mvc:default-servlet-handler/>`, который маппит запросы к статическим html-страницам.   
+В `RootController` добавляем метод, который будет обрабатывать запросы по url-паттерну "/login" и перенаправлять их на страницу `login.jsp`. Информацию о неуспешной аутентификации или сообщения вместо
+атрибутов передаем в параметрах запроса (`param.error/message`).
+
+</details>
+
+#### Apply 9_09_min_form_login.patch
+
+> Добавил функциональность logout
+
+- [Минимальный form-login](https://docs.spring.io/spring-security/reference/servlet/configuration/xml-namespace.html#ns-minimal)
+- <a href="https://docs.spring.io/spring-security/site/migrate/current/3-to-4/html5/migrate-3-to-4-xml.html#m3to4-xmlnamespace-form-login">Migrating &lt;form-login&gt;</a>
+
+#### ![question](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Мои вопросы:
+
+- Почему при логине как admin еда отдается для user?
+- Почему при логине как user не отображается список пользователей?
+- Почему еда не редактируется?
+
+> Подсказка: поглядите вкладку Network в браузере.
+
+#### Apply 9_10_jsp_form_login.patch
+
+> Рефакторинг
+> - В `login.jsp` вместо атрибутов достаю параметры запроса (`param.error/message`).
+> - Сделал i18n описания приложения
+> - При нажатии кнопок `Зайти как ...` сделал вход в приложение
+
+- [Собственный form-login](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/form.html#servlet-authentication-form-custom)
+
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 8. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFYTA4aVN4bWxzbEU">Реализация собственного провайдера авторизации.</a>
+
+<details>
+  <summary><b>Краткое содержание</b></summary>
+
+#### Реализация собственного провайдера авторизации.
+
+Сейчас пользователи приложения и их аутентификационные данные жестко прописаны в конфигурации `spring-security.xml`, что приемлемо только для тестового использования.  
+Чтобы получать данные креденшелов из базы вместо простого `user-service` настроим `jdbc-user-service`.  
+Для этого прямо в конфигурации указываем SQL-запросы, которые Spring будет выполнять к базе для получения креденшелов и данных аутентифицированного пользователя.  
+Если аутентификация прошла успешно, Spring Security в `ThreadLocal` (стратегия хранения по умолчанию) сохраняет для текущего потока объект `Authentication`. Данные аутентифицированного пользователя
+можно достать из `ThreadLocal` с помощью `SecurityContextHolder.getContext().getAuthentication()`.  
+Раньше в проекте для получения этих данных использовался утильный класс `LoggedUser`, теперь он переименован в `SecurityUtil`. В этом классе определены методы доступа к залогиненному пользователю:
+
+- `safeGet()` - возвращается `AuthorizedUser` или `null` (если аутентифицированного пользователя нет).
+
+Заменим `jdbc_user_service` и SQL в конфигурации `spring-security.xml` кодом Java: в `<authentication-provider user-service-ref="userService">`
+задаем бин, который реализует интерфейс Spring Security `UserDetailsService` и реализуем его метод `#loadUserByUserName`. В этот метод передается значение `username` из формы логина - в нашем
+приложении это `email`. Если через `UserRepository#getByEmail` пользователь не найдется в базе, выбросим стандартное Spring Security исключение `UsernameNotFoundException`. Метод `#loadUserByUserName`
+должен возвратить данные аутентифицированного пользователя - объект класса, который имплементирует Spring Security интерфейс `UserDetails`. Вместо самостоятельной реализации всех методов
+интерфейса `UserDetails` проще всего сделать класс (`AuthorizedUser`), отнаследовав его от стандартной Spring Security имплементации этого
+интерфейса `org.springframework.security.core.userdetails.User`
+и в конструкторе передав ему все необходимые данные.   
+Роли он принимает как `Collection<? extends GrantedAuthority> authorities`, поэтому `enum Role` отнаследуем от `GrantedAuthority` и реализуем его метод `getAuthority()`:
+[права на основе ролей принято задавать с префиксом "ROLE_"](https://stackoverflow.com/a/19542316/548473). 
+Класс `AuthorizedUser` задает в нашем приложении аутентифицированного пользователя и мы будем хранить в нем `UserTo` - данные, которых нет в
+стандартном `org.springframework.security.core.userdetails.User`, в частности `id` и `caloriesPerDay`.  
+Есть еще много разных способов реализации `UserDetails`, которые можно найти в интернете. На мой взгляд наше текущее решение самое простое.
+
+Еще - объект `AuthorizedUser` будет храниться в сессии (про нее видео ниже), и для этого ему требуется сериализация средствами Java. Это наследование его и всех классов-полей от маркерного
+интерфейса `Serializable` и необязательный, но желательный `serialVersionUID`.
+
+> **Будьте внимательны в выпускных проектах с `Serializable`. Им нужно помечать ТОЛЬКО объекты, которые будут храниться в сессии**
+
+</details>
+
+#### Apply 9_11_auth_via_user_service.patch
+
+> - В `UserService` добавил `@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)`, т.к. без этой аннотации для кэширования создается прокси над интерфейсом `UserDetailsService` (см. следующее видео по типам проксирования Spring). Можете проверить, что без этой аннотации приложение не поднимется.
+> - `GrantedAuthority` это "разрешение" или "право". Если оно дается на основе роли, в Spring Security принято использовать префикс `ROLE_`. При этом сама роль не должна иметь префикс.
+>    - [Role and GrantedAuthority](https://stackoverflow.com/a/19542316/548473)
+
+- [UserDetailsService](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/user-details-service.html)
+- [serialVersionUID value](https://stackoverflow.com/a/605832/548473)
+
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 9.  <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFT2Qya2V4N0kzWWM">Принцип работы Spring Security. Проксирование.</a>
+
+<details>
+  <summary><b>Краткое содержание</b></summary>
+
+### Принцип работы Spring Security. Проксирование.
+
+Одна из основных функциональностей Spring Core, кроме IOC контейнера и связываний, это проксирование. Чаще всего оно задается аннотациями: при поднятии приложения и создании контекста на основе
+препроцессоров Spring анализирует аннотации бинов и, находя указание к проксированию, создает прокси (обертку) над исходным объектом. В контекст Spring попадает уже не исходный инстанс класса, а его
+прокси. В Spring используется две стратегии проксирования:
+
+- на основе JDK 4 [Dynamic Proxy API](https://docs.oracle.com/javase/8/docs/technotes/guides/reflection/proxy.html) - прокси-объект создаются как обертка ко всем интерфейсам, которые имплементирует
+  сервис.
+- на основе CGLib - когда нет интерфейсов, прокси объект создается на уровне модификации байт-кода класса.
+
+По умолчанию, если класс имплементирует интерфейсы, проксирование происходит по стратегии Dynamic Proxy, и в прокси мы имеем только методы интерфейсов. Стратегию проксирования можно поменять на CGLib, задав явно в
+конфигурациях параметра `proxy-target-class` или, как сделали мы, аннотацию `@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)`. В результате прокси нашего `UserService` сделано через CGLib, и в нем доступны все его методы.
+Второй путь - создать и реализовать интерфейс, в котором есть все методы класса.
+
+Работа Spring Security основывается на цепочке Security-фильтров. HTTP-запрос перед тем, как поступить в Dispatcher Servlet, проходит цепочку фильтров (стандартная функциональность Servlet API). Spring
+предоставляет собственную цепочку стандартных фильтров и возможность отключать/заменять любые фильтры из этой цепочки или внедрять в нее собственные фильтры.
+
+</details>
+
+- <a href="https://ru.wikibooks.org/wiki/Spring_Security/Технический_обзор_Spring_Security">Технический обзор Spring Security</a>
+- <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#aop-proxying">Типы проксирования</a>
+- <a href="http://samolisov.blogspot.ru/2010/04/proxy-java.html">Dynamic Proxy API</a>
+- [Security фильтры](https://docs.spring.io/spring-security/reference/servlet/configuration/xml-namespace.html#filter-stack)
+- [Основы работы с Spring Security от Eugene Suleimanov](https://www.youtube.com/watch?v=7uxROJ1nduk)
+
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 10. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFU3hMR0o4eGNoUmc">Spring Security Test</a>
+
+<details>
+  <summary><b>Краткое содержание</b></summary>
+
+### Spring Security Test
+
+Для тестирования контроллеров, к запросам которого требуется аутентификация, будем использовать библиотеку `spring-security-test`. Для этого в `pom.xml` подключим эту зависимость и в `MockMvc`
+добавим аналог цепочки security-фильтров: `.apply(springSecurity())`. Если сейчас запустить тесты, то они упадут, потому что в `mockMvc` происходит аутентификация, а в запросах, которые тесты
+посылают серверу, креденшелов пользователя нет.  
+Чтобы пройти аутентификацию в REST-контроллерах, в каждом запросе укажем креденшелы пользователя через `...with(userHttpBasic(ADMIN))`.
+`TestUtil#userHttpBasic` - наш утилитный метод, который добавляет к запросу базовую аутентификацию (заголовок `Authorization` с данными *логина:пароля*).
+
+</details>
+
+#### Apply 9_12_spring_security_test.patch
+
+> - Сделал "честную" аутентификацию для `RootControllerTest` (через `TestUtil#userAuth`)
+> - Сделал `mockAuthorize` для `SpringMain`, в который не попадают фильтры
+
+- [Spring Security Testing](https://docs.spring.io/spring-security/reference/servlet/test/index.html)
+- [Setting Up MockMvc and Spring Security](https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/setup.html)
+- [HttpBasic авторизация](https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/http-basic.html)
+- [Тестирование контроллеров в Spring Boot](https://javaops.ru/view/bootjava/lesson06#test)
+
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 11. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFUzNFanF6MGZGNHc">Cookie. Session.</a>
+
+<details>
+  <summary><b>Краткое содержание</b></summary>
+
+### Cookie. Session.
+
+Если в браузере с помощью инструментов разработчика внимательно посмотреть на запросы, которые уходят от клиента на сервер, можно увидеть, что к каждому запросу прикрепляется Cookie `JSESSIONID`. 
+Эта Cookie - ключ к мапе, которая хранится в сессии и содержит аутентификационные данные. При аутентификации клиента в приложении создается объект `Authentication`, генерируется ключ, по нему объект кладется в сессию (мультимапа), и
+этот ключ возвращается клиенту в ответе как значение cookie `JSESSIONID`. 
+Браузер хранит cookie на основе домена сайта и прикрепляет их ко всех запросам к этому домену. По значению cookie `JSESSIONID` Spring Security
+хранит в сессии `Authentication`, из которого мы уже можем достать нашего `AuthorizedUser`.  
+
+Для REST-контроллеров в конфигурации мы указали `create-session="stateless"` - при обращении к ним приложение
+не будет создавать HTTP-сессии и сookie. В каждом запросе клиента к REST-контроллеру вместо cookie есть заголовок `Authorization` с данными *логин:пароль* клиента. Каждый запрос проходит цепочку
+Security-фильтров, и для базовой аутентификации при каждом запросе будет происходить обращение к БД для получения пользователя по email и проверка его креденшелов из заголовка `Authorization`.  
+
+При некоторых условиях Tomcat сохраняет данные сессии, и ему требуется возможность их сериализации, поэтому объекты в сеcсии (и объекты, которые в них содержатся) обязательно должны имплементировать
+интерфейс `Serializable` (в нашем случае `AuthorizedUser` и `UserTo`).
+
+</details>
+
+- <a href="https://ru.wikipedia.org/wiki/HTTP_cookie">HTTP cookie</a></h3>
+- <a href="http://stackoverflow.com/questions/595872/under-what-conditions-is-a-jsessionid-created">Under what conditions is a JSESSIONID created?</a>
+- <a href="http://halyph.blogspot.ru/2014/08/how-to-disable-tomcat-session.html">Tomcat Session Serialization</a>
+
+### Дополнительно: ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 12. [Новое в Spring 5. Миграция проекта](https://javaops.ru/view/resources/spring5)
+
+## ![question](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Ваши вопросы
+
+> В куки попадает обычная строка JSESSIONID. Куда сериализуется объект User?
+
+Для хранения состояния сессии (например, корзины покупателя) в Servlet API есть механизм хранения объектов сессии (грубо - мультимапмапа, которая достается из хранилища по ключу). При создании сессии
+на стороне сервера (через `request.getSession`) создается кука `JSESSIONID`, которая передается между клиентом и сервером в каждом запросе и является ключом в хранилище объектов сессий.
+См. <a href="http://javatutor.net/books/tiej/servlets#_Toc39472970">обработка сессий с помощью сервлетов</a>
+
+> В `login.jsp` есть форма `<form:form action="spring_security_check" ..>` Где такой url используется?
+
+Он задается в `login-processing-url` конфигурации `spring-security.xml` и определяет URL к Spring Security, который принимает данные авторизационной формы (`username` и `password`).
+
+> Если не пользовать js, а писать UI на JSP, сообщения между ui и сервером будут в формате json? Это же будет JSON API?
+
+Есть данные, которые передаются между клиентом и сервером в формате json или get/post с параметрами, есть стили взаимодействия клиента и сервера (<a href="https://ru.wikipedia.org/wiki/REST">REST</a>
+, <a href="http://jsonapi.org/">JSON API</a>, <a href="https://ru.wikipedia.org/wiki/JSON-RPC">JSON-RPC</a>) и есть средства генерации HTML: JSP, Javascript фреймворк, Thymleaf и пр. Не надо эти вещи
+путать между собой.
+
+> По умолчанию Спринг работает с `UserDetailsService#loadUserByUsername`, который должен возвращать `UserDetails`. Но мы не хотим стандартные, мы хотим свои, поэтому просто наследуем наши `UserService` и `AuthorizedUser` от соответствующих интерфейсов и реализуем недостающие методы, которые spring security и будет использовать?
+
+В прошлых выпусках я сам реализовывал интерфейс `UserDetails`. Сейчас я считаю, что проще отнаследовать `AuthorizedUser` от `org.springframework.security.core.userdetails.User`, который уже имеет реализацию.
+А в `UserService` мы реализуем `UserDetailsService#loadUserByUsername` и указываем этот сервис в `spring-security.xml` `<authentication-provider user-service-ref="userService">`.
+Также есть его стандартные реализации, которые использовались до нашей кастомной `UserService`, например `jdbc-user-service` использует реализацию `JdbcUserDetailsManager`
+
+## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png) Домашнее задание HW9
+
+- 1: Реализовать для meal Binding/ Update/ Validation. Проверить работу при пустом значении `calories`.
+- 2: Перевести `meals.jsp` на работу по ajax. Стиль строки таблицы сделать в зависимости от `excess`, время отображать без `T`. Добавить i18n.
+- 3: Починить meals-тесты, добавить тест на неавторизованный доступ.
+
+### Optional
+
+- 4: Подключить datetime-picker к фильтрам и модальному окну добавления/редактирования еды
+    - <a href="http://xdsoft.net/jqplugins/datetimepicker/">DateTimePicker jQuery plugin</a>
+    - [jQuery: конверторы](https://jquery-docs.ru/jQuery.ajax/#using-converters)
+
+- Попробуйте при запросах по REST оставить стандартный ISO формат (с разделителем `T`). То есть:
+    - Отображение и редактирование еды на UI происходит без `T` (формат значений на UI можно увидеть во вкладке браузера Network)
+    - Когда мы работаем по REST, в json и запросах формат даты ISO (с разделителем `T`)
+    - Напомню, что параметры методов контроллера (в том числе собранные в объекты через Binding) парсятся конверторами спринга (`@DateTimeFormat`), а объекты json парсятся Jackson, и они никак не
+      влияют друг на друга.
+
+## ![error](https://cloud.githubusercontent.com/assets/13649199/13672935/ef09ec1e-e6e7-11e5-9f79-d1641c05cbe6.png) Проверка в HW09
+
+- 1: Проверьте, что при добавлении и редактировании пользователя и еды у вас корректно отображаются заголовки модального окна:
+  "Добавить/Редактировать еду пользователя"
+- 2: Не дублируйте
+
+```
+<c:forEach var='key' ...
+i18n['${key}'] = ...
+```
+
+- 3: Для подключения css и js datetimepicker-а посмотрите в его jar (или поищите в проекте по Ctrl+Shift+N: `datetimepicker`). При ошибке в datetimepicker javascript, обратите внимание на **имя
+  javascript-файла** в [DateTimePicker](https://xdsoft.net/jqplugins/datetimepicker/) "How do I use it?"
+- 4: datetimepicker работает корректно в Хроме, если убрать в `type` в `<input type="date/time/datetime-local" ..`
+- 5: Если появляются проблемы с JS типа `... is not defined` - обратите внимание на порядок загрузки скриптов и атрибут `defer`. Скрипты должны идти в нужном порядке. Если определяете скрипт прямо в
+  jsp, он выполняется до `defer` скриптов.
+- 6: Не дублируйте обработку ошибок в `BindingResult` в ajax-контроллерах
+- 7: Проверьте редактирование еды: открыть на редактирование и сохранить не должно приводить к ошибкам с форматом времени.
+- 8: Проверьте в `RootController.meals()`, его нужно тоже поправить
+- 9: При решении с jQuery-конвертором: он создает поле `responseJSON`, если внутри не вылетает по эксепшену. См.
+  также [hasOwnProperty()](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty)  
